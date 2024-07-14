@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.py": "python",
+        "iostream": "cpp"
+    },
+    "C_Cpp.default.compilerPath": "C:\\MinGW\\bin\\g++.exe"
+}
