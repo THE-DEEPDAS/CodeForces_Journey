@@ -1,17 +1,15 @@
+//derive the formula from giving wrong answer 2 times of testcase and identify the pattern
+
 #include <bits/stdc++.h>
 
 using namespace std;
 
 int main()
 {
-    int n = 0;
+    long long n = 0;
     cin >> n;
 
-    int presses = 0;
-    for (int i = 1; i <= n; i++)
-    {
-        presses += 3*i - 3;
-    }
+    long long presses = (n - 1) * n * (n + 1) / 6 + n;
 
     cout << presses << endl;
 }
