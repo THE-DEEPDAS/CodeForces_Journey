@@ -1,5 +1,5 @@
 // we have l and r
-// task is to find out l<= x <= y <= r and l <= LCM(x,y) <= r
+// task is to find out l <= x <= y <= r and l <= LCM(x,y) <= r
 typedef long long ll;
 #include <bits/stdc++.h>
 

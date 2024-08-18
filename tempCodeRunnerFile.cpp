@@ -1,8 +1,1 @@
-
-            }
-            else break;
-        }
-        maxLength = max(maxLength, current_length);
-    }
-    cout << maxLength << endl;
-}
+sum - 3 + prev_spec_shots % 7
