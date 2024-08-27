@@ -1,1 +1,0 @@
-sum - 3 + prev_spec_shots % 7
