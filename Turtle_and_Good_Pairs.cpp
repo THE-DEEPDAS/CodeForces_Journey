@@ -16,6 +16,8 @@ int main()
         string s;
         cin >> s;
 
+        // so just doing a count sort
+
         vector<int> freq(26, 0);
         for (char c : s)
         {

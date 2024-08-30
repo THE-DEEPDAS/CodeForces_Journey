@@ -1,18 +1,15 @@
-# we need to find a substring t of a string s such that t is prefix + suffix + appears 
-# somewhere in middle also in string s
-# example fixprefixsuffix so fix is appearing at start + end + middle of string s
-s = input()
+s = input().strip()
 n = len(s)
-possible_answers = []
+printed = False
 
-for i in range(n):  # prefix can't be empty string
-    prefix = s[ : i]  
-    suffix = s[-i : ]
-    if prefix == suffix:
-        if prefix in s[:]:  
-            possible_answers.append(prefix)
+for length in range(n - 1, 0, -1):
+    prefix = s[:length]
+    suffix = s[-length:]
 
-if possible_answers:
-    print(possible_answers[-1])
-else:
-    print("Just a legend")
+if prefix == suffix:
+        if prefix in s[1:-1]:
+            print(prefix)
+            printed = True
+
+if not printed: 
+     print("Just a legend")
