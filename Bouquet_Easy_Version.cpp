@@ -17,15 +17,23 @@ int main(){
         for (ll i = 0; i < n; i++)
             cin >> a[i];
 
-        sort(a.begin(), a.end());
-        ll ans = 0, i = 0;
-        while(ans + a[i] <= m){
-            if(i < n - 1 && a[i + 1] - a[i] > 1){
+        sort(a.rbegin(), a.rend()); // Sort petals in ascending order
+        ll total_cost = 0, petals_bought = 0;
+
+        for (ll i = 0; i < n; i++) {
+            // If this is not the first flower and the difference between consecutive petals > 1, break
+            if(i > 0 && a[i] - a[i - 1] > 1) {
                 break;
             }
-            ans += a[i++];
+            // Check if we can afford the current flower
+            if(total_cost + a[i] <= m) {
+                total_cost += a[i];  // Buy the flower
+                petals_bought += a[i];  // Add its petals to the total
+            } else {
+                break;  // Stop if we can't afford this flower
+            }
         }
 
-        cout << ans << endl;
+        cout << petals_bought << endl;  // Output the maximum number of petals we can buy
     }
 }
