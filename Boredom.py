@@ -6,21 +6,18 @@ from collections import Counter
 n = int(input())
 array = list(map(int, input().split()))
 
-freq = Counter(array)
-unique_numbers = sorted(freq.keys(), reverse=True)
+# Step 1: Count the occurrences of each number
+cnt = [0] * (max(array) + 1) 
+for num in array:
+    cnt[num] += 1
 
-points = 0
+dp = [0] * (len(cnt))  
+dp[1] = cnt[1] 
 
-for num in unique_numbers:
-    if freq[num] > 0 and (((num - 1) * freq[num - 1] <= num * freq[num]) and ((num + 1) * freq[num + 1] <= num * freq[num])):
-        if((((num - 1) * freq[num - 1] + (num + 1) * freq[num + 1]) > num * freq[num])):
-            points += (num - 1) * freq[num - 1] + (num + 1) * freq[num + 1]
-        else:
-            points += num * freq[num]
-            del freq[num]
-            if num - 1 in freq:
-                del freq[num - 1]
-            if num + 1 in freq:
-                del freq[num + 1]
+if len(cnt) > 2:
+    dp[2] = max(dp[1], cnt[2] * 2)  # f(2) = max(f(1), cnt[2] * 2)
 
-print(points)
+for i in range(3, len(cnt)):
+    dp[i] = max(dp[i - 1], dp[i - 2] + cnt[i] * i)
+
+print(dp[-1])
