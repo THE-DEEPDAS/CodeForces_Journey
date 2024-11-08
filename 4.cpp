@@ -1,57 +1,60 @@
-#pragma GCC optimize("O3")
+#pragma GCC optimize("O2")
 #include <bits/stdc++.h>
 using namespace std;
+typedef long long ll;
 
-int main() {
-    int n, k, q;
-    cin >> n >> k >> q;
-    
-    vector<vector<int>> a(n, vector<int>(k));
-    vector<vector<int>> b(n, vector<int>(k));
-
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < k; ++j) {
-            cin >> a[i][j];
-        }
+// Global setup for fast I/O
+struct FastIO
+{
+    FastIO()
+    {
+        ios_base::sync_with_stdio(false); // Disable C I/O synchronization
+        cin.tie(nullptr);                 // Untie cin and cout for faster input/output
     }
+} fast_io_setup; // This will be executed before main()
 
-    for (int j = 0; j < k; ++j) {
-        b[0][j] = a[0][j];
-    }
-    
-    for (int i = 1; i < n; ++i) {
-        for (int j = 0; j < k; ++j) {
-            b[i][j] = b[i - 1][j] | a[i][j];
-        }
-    }
+int main()
+{
+    ll testcases;
+    cin >> testcases;
 
-    while (q--) {
-        int m;
-        cin >> m;
-        vector<pair<int, pair<char, int>>> r(m);
-        
-        for (int i = 0; i < m; ++i) {
-            cin >> r[i].first >> r[i].second.first >> r[i].second.second;
+    for (ll testcase = 0; testcase < testcases; testcase++)
+    {
+        ll n, m, r1, r2;
+        cin >> n >> m >> r1 >> r2;
+
+        if (r1 > r2)
+        {
+            swap(r1, r2);
         }
 
-        int res = -1;
-
-        for (int i = 0; i < n; ++i) {
-            bool valid = true;
-            for (const auto& req : r) {
-                int idx = req.first - 1;
-                char op = req.second.first;
-                int val = req.second.second;
-
-                if ((op == '<' && b[i][idx] >= val) || (op == '>' && b[i][idx] <= val)) {
-                    valid = false;
-                    break;
-                }
+        // first position is 2*(r1 + 1)
+        ll ans = 2 * (r1 + 1);
+        bool printed = false;
+        // second position will be from (r1 + 3, 2*(r1 + 1))
+        ll x = (r1 + 3 + r2);
+        if (x > n)
+        {
+            cout << -1 << endl;
+            printed = true;
+        }
+        else
+        {
+            ans += x;
+            ll y = (2 * (r1 + 1) + r2);
+            if (y > m)
+            {
+                cout << -1 << endl;
+                printed = true;
             }
-            if (valid) {
-                res = res == -1 ? i + 1 : min(res, i + 1);
+            else
+            {
+                ans += (2 * (r1 + 1) + r2);
             }
         }
-        cout << res << endl; 
+        if (!printed)
+        {
+            cout << ans << endl;
+        }
     }
 }

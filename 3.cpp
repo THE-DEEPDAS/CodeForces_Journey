@@ -1,57 +1,65 @@
-#pragma GCC optimize("O2")
 #include <bits/stdc++.h>
 using namespace std;
-typedef long long ll;
 
-struct FastIO {
-    FastIO() {
-        ios_base::sync_with_stdio(false);
-        cin.tie(nullptr);
-    }
-} fast_io_setup;
+struct Platform {
+    int h, l, r, index;
+};
 
 int main() {
-    ll testcases;
-    cin >> testcases;
-    for (ll testcase = 0; testcase < testcases; testcase++)
-    {
-        ll n, m;
-        cin >> n >> m;
-        vector<vector<char>> grid(n, vector<char>(m));
-        for(ll i = 0; i < n; i++) {
-            for(ll j = 0; j < m; j++) {
-                cin >> grid[i][j];
-            }
+    int t;
+    cin >> t;
+
+    while (t--) {
+        int n;
+        cin >> n;
+
+        vector<Platform> platforms(n);
+
+        // Read platform data
+        for (int i = 0; i < n; i++) {
+            cin >> platforms[i].h >> platforms[i].l >> platforms[i].r;
+            platforms[i].r = platforms[i].l + platforms[i].r; // right edge
+            platforms[i].index = i; // Store the original index
         }
-        
-        ll ans = 0;
-        ll layers = min(n, m) / 2;
-        
-        for(ll layer = 0; layer < layers; layer++) {
-            string curr;
-            
-            for(ll j = layer; j < m-layer; j++) 
-                curr += grid[layer][j];
-            
-            for(ll i = layer+1; i < n-layer; i++) 
-                curr += grid[i][m-1-layer];
-          
-            for(ll j = m-2-layer; j >= layer; j--) 
-                curr += grid[n-1-layer][j];
-            
-            for(ll i = n-2-layer; i > layer; i--) 
-                curr += grid[i][layer];
-            
-           
-            curr += curr; 
-            for(ll i = 0; i < curr.length()/2; i++) {
-                if(curr[i] == '1' && curr[i+1] == '5' && 
-                   curr[i+2] == '4' && curr[i+3] == '3') {
-                    ans++;
+
+        // Sort platforms by height
+        sort(platforms.begin(), platforms.end(), [](const Platform& p1, const Platform& p2) {
+            return p1.h < p2.h;
+        });
+
+        // Result array to store minimum drop for each platform
+        vector<int> result(n, INT_MAX);
+
+        // For each platform, calculate the minimum possible maximum drop
+        for (int i = 0; i < n; i++) {
+            int minDrop = INT_MAX;
+
+            // Find all platforms below the current one that the ball can fall onto
+            for (int j = 0; j < i; j++) {
+                if (platforms[j].h < platforms[i].h && (
+                    (platforms[j].r >= platforms[i].l && platforms[j].l <= platforms[i].r) ||
+                    (platforms[i].r >= platforms[j].l && platforms[i].l <= platforms[j].r))) {
+
+                    // Calculate the vertical drop between platform i and platform j
+                    int drop = abs(platforms[i].h - platforms[j].h);
+                    minDrop = min(minDrop, drop);
                 }
             }
+
+            // If no valid platform is found below, the drop is just the height
+            if (minDrop == INT_MAX) {
+                result[platforms[i].index] = platforms[i].h;
+            } else {
+                result[platforms[i].index] = minDrop;
+            }
         }
-        
-        cout << ans << "\n";
+
+        // Output the result for the test case
+        for (int i = 0; i < n; i++) {
+            cout << result[i] << " ";
+        }
+        cout << endl;
     }
+
+    return 0;
 }
