@@ -82,29 +82,30 @@ int integer_sqrt(int n) {
 }
 
 int main() {
-    ll n, coins;
-    cin >> n >> coins;
-    
-    vector<ll> costs(n);
-    for(ll i = 0; i < n; i++) {
-        cin >> costs[i];
-    }
-    
-    sort(costs.begin(), costs.end());
+    ll testcases;
+    cin >> testcases;
 
-    ll count = 0;
-    ll total = 0;
-    
-    for(ll i = 0; i < n; i++) {
-        if(total + costs[i] <= coins) {
-            total += costs[i];
-            count++;
+    for(ll testcase = 0; testcase < testcases; testcase++){
+        string s;
+        cin >> s;
+
+        ll a = s[0] - '0';
+        ll b = s[2] - '0';
+        char comparision = s[1];
+        if((comparision == '<' && a < b) || (comparision == '>' && a > b) || (comparision == '=' && a == b)){
+            cout << s << "\n";
         }
-        else {
-            break;
+        else{
+            if(a > b){
+                cout << a << ">" << b << "\n";
+            }
+            else if(a < b){
+                cout << a << "<" << b << "\n";
+            }
+            else
+                cout << a << "=" << b << "\n";
         }
     }
-    cout << count << endl;
 }
 
 

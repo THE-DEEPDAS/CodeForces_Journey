@@ -89,23 +89,60 @@ int main() {
         ll n;
         cin >> n;
 
-        vector<ll> a(n);
-        for(ll i = 0; i < n; i++) cin >> a[i];
+        map<ll, vector<ll>> points;
+        for (ll i = 0; i < n / 2; i ++){
+            ll x, y;
+            cin >> x >> y;
 
-        map<ll, ll> freq;
-        for (ll i = 0; i < n; i++){
-            freq[a[i]]++;
+            points[x].push_back(y);
         }
 
-        ll ans = 0;
+        // ll max_area = INT_MIN;
 
-        for (auto& f: freq){
-            if(f.second >= 2){
-                ans += f.second / 2;
-            }
-        }
+        // for (auto it1 = points.begin(); it1 != points.end(); ++it1) {
+        //     for (auto it2 = next(it1); it2 != points.end(); ++it2) {
+        //         ll x1 = it1->first, x2 = it2->first;
+        //         const vector<ll>& y1 = it1->second;
+        //         const vector<ll>& y2 = it2->second;
 
-        cout << ans << "\n";
+        //         vector<ll> common_y;
+        //         set_intersection(
+        //             y1.begin(), y1.end(),
+        //             y2.begin(), y2.end(),
+        //             back_inserter(common_y)
+        //         );
+
+        //         if (common_y.size() >= 2) {
+        //             for (size_t i = 0; i < common_y.size(); ++i) {
+        //                 for (size_t j = i + 1; j < common_y.size(); ++j) {
+        //                     ll height = abs(common_y[i] - common_y[j]);
+        //                     ll width = abs(x1 - x2);
+        //                     ll area = height * width;
+        //                     max_area = max(max_area, area);
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
+
+        // // cout << max_area << '\n';
+        // if(max_area == INT_MIN){
+        //     cout << "NO\n";
+        // }
+        // else{
+        //     cout << "YES\n";
+        //     cout << max_area << "\n";
+        // }
+
+        // so what should be my approach
+        // initial wrong approach was find the repeating x coordinates which occurs >= 2 times
+        // take their corresponding y values and if they are forming a rectangle then calculate their area
+        // compare the area with the maximum area found till now and update the answer accordingly
+        // now the problem i face in this approach is that slopes of the rectangle's side we are considering 0 or infinity only
+        // but it can be a tilted rectangle also, so to solve it correctly i devised the new approach
+        // this is a brute force approach which takes 4 points and calculate slopes of the parallel lines
+        // finally find the area and make the comparisions but this gives TLE
+        // final approach: what we can do is that 
     }
 }
 

@@ -1,65 +1,144 @@
+#pragma GCC optimize("O2")
 #include <bits/stdc++.h>
 using namespace std;
+typedef long long ll;
+#define MOD 1000000007
 
-struct Platform {
-    int h, l, r, index;
-};
+// Fast I/O setup
+struct FastIO {
+    FastIO() {
+        ios_base::sync_with_stdio(false);
+        cin.tie(nullptr);
+    }
+} fast_io_setup;
+
+// Binary Search Function
+int binary_search(vector<int>& arr, int target) {
+    int left = 0, right = arr.size() - 1;
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        if (arr[mid] == target) return mid;
+        if (arr[mid] < target) left = mid + 1;
+        else right = mid - 1;
+    }
+    return -1;
+}
+
+// Custom Power Function (Efficient Modular Exponentiation)
+ll power(ll base, ll exp, ll mod = 1e9+7) {
+    ll result = 1;
+    while (exp > 0) {
+        if (exp % 2 == 1) result = (result * base) % mod;
+        base = (base * base) % mod;
+        exp /= 2;
+    }
+    return result;
+}
+
+// Sieve of Eratosthenes for Prime Numbers
+vector<int> sieve(int n) {
+    vector<int> is_prime(n + 1, 1);
+    is_prime[0] = is_prime[1] = 0;
+    for (int i = 2; i * i <= n; i++) {
+        if (is_prime[i]) {
+            for (int j = i * i; j <= n; j += i) is_prime[j] = 0;
+        }
+    }
+    vector<int> primes;
+    for (int i = 2; i <= n; i++) {
+        if (is_prime[i]) primes.push_back(i);
+    }
+    return primes;
+}
+
+// Factorization to Find Prime Divisors of a Number
+vector<int> prime_factors(int n) {
+    vector<int> factors;
+    for (int i = 2; i * i <= n; i++) {
+        while (n % i == 0) {
+            factors.push_back(i);
+            n /= i;
+        }
+    }
+    if (n > 1) factors.push_back(n);
+    return factors;
+}
+
+// Square Root Calculation (Integer)
+int integer_sqrt(int n) {
+    int left = 0, right = n, ans = -1;
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        if (mid * mid == n) return mid;
+        if (mid * mid < n) {
+            ans = mid;
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+    return ans;
+}
 
 int main() {
-    int t;
-    cin >> t;
-
-    while (t--) {
-        int n;
-        cin >> n;
-
-        vector<Platform> platforms(n);
-
-        // Read platform data
-        for (int i = 0; i < n; i++) {
-            cin >> platforms[i].h >> platforms[i].l >> platforms[i].r;
-            platforms[i].r = platforms[i].l + platforms[i].r; // right edge
-            platforms[i].index = i; // Store the original index
+    string s;
+    cin >> s;
+    ll n = s.length();
+    
+    // dp[i] = ways to decode string upto index i
+    vector<ll> dp(n + 1, 0);
+    dp[0] = 1;
+    
+    if(s[0] == '*') {
+        dp[1] = 9;  
+    } 
+    else if(s[0] != '0') {
+        dp[1] = 1;
+    }
+    
+    for(int i = 2; i <= n; i++) {
+        char curr = s[i-1];
+        char prev = s[i-2];
+        if(curr == '*') {
+            dp[i] = (dp[i] + dp[i-1] * 9L) % MOD;
+        } 
+        else if(curr != '0') {
+            dp[i] = (dp[i] + dp[i - 1]) % MOD;
         }
-
-        // Sort platforms by height
-        sort(platforms.begin(), platforms.end(), [](const Platform& p1, const Platform& p2) {
-            return p1.h < p2.h;
-        });
-
-        // Result array to store minimum drop for each platform
-        vector<int> result(n, INT_MAX);
-
-        // For each platform, calculate the minimum possible maximum drop
-        for (int i = 0; i < n; i++) {
-            int minDrop = INT_MAX;
-
-            // Find all platforms below the current one that the ball can fall onto
-            for (int j = 0; j < i; j++) {
-                if (platforms[j].h < platforms[i].h && (
-                    (platforms[j].r >= platforms[i].l && platforms[j].l <= platforms[i].r) ||
-                    (platforms[i].r >= platforms[j].l && platforms[i].l <= platforms[j].r))) {
-
-                    // Calculate the vertical drop between platform i and platform j
-                    int drop = abs(platforms[i].h - platforms[j].h);
-                    minDrop = min(minDrop, drop);
+        if(prev == '*') {
+            if(curr == '*') {
+                // 1st = 1 thi 9 and 2nd = 2 thi 6
+                dp[i] = (dp[i] + dp[i-2] * 15L) % MOD;
+            } 
+            else {
+                // agar * 1 so np and 2 to char <= 6
+                ll ways = curr <= '6' ? 2 : 1;
+                dp[i] = (dp[i] + dp[i-2] * ways) % MOD;
+            }
+        } 
+        else if(prev == '1' || prev == '2') {
+            if(curr == '*') {
+                ll limit = (prev == '1') ? 9 : 6;
+                dp[i] = (dp[i] + dp[i-2] * limit) % MOD;
+            } 
+            else {
+                // sado number che
+                int num = (prev - '0') * 10 + (curr - '0');
+                if(num <= 26) {
+                    dp[i] = (dp[i] + dp[i-2]) % MOD;
                 }
             }
-
-            // If no valid platform is found below, the drop is just the height
-            if (minDrop == INT_MAX) {
-                result[platforms[i].index] = platforms[i].h;
-            } else {
-                result[platforms[i].index] = minDrop;
-            }
         }
-
-        // Output the result for the test case
-        for (int i = 0; i < n; i++) {
-            cout << result[i] << " ";
-        }
-        cout << endl;
     }
-
-    return 0;
+    
+    cout << dp[n] << endl;
 }
+
+
+/*
+  -----     -----    -----    ----   
+ |     -   |        |        |    |  
+ |     -    -----    -----   |----   
+ |     -   |        |        |       
+  -----     -----    -----   |       
+*/
