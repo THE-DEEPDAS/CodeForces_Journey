@@ -285,26 +285,27 @@ void postorder(TreeNode* root) {
     cout << root->val << ' ';
 }
 
-class A{
-    public: 
-    virtual void fun(){
-        cout << "A" << "\n";
-    }
-};
-
-class B : public A{
-    public:
-    void fun(){
-        cout << "B" << "\n";
-    }
-};
+int find_min_oper(int n, int k){
+	if(k == 1) return n;
+	int ans = 0;
+	while(n){
+		ans += n%k;
+		n /= k;
+	}
+	return ans;
+}
 
 int main() {
-    A a;
-    B b;
-    A *aptr;
-    aptr = &a;
-    aptr->fun();
+    fast_io();
+    ll testcases;
+    cin >> testcases;
+    for (ll testcase = 0; testcase < testcases; ++testcase) {
+        // shaant man thi vichaar to question thay jase!!
+        ll n, k;
+        cin >> n >> k;
+
+        cout << find_min_oper(n,k) << "\n";
+    }
 }
 
 

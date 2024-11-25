@@ -1,117 +1,87 @@
-// બધા માટે રામ રામ, ભગવાનનું નામ લો અને તમારું કાર્ય શરૂ કરો.
-
-#pragma GCC optimize("O2")
-#include <bits/stdc++.h>
+#include <iostream>
+#include <string>
 using namespace std;
-typedef long long ll;
 
-// Fast I/O setup
-struct FastIO {
-    FastIO() {
-        ios_base::sync_with_stdio(false);
-        cin.tie(nullptr);
+class Student {
+protected:
+    int roll_no;
+    string name;
+
+public:
+    // Constructor for Student
+    Student(int r, const string &n) : roll_no(r), name(n) {}
+
+    void showStudentDetails() const {
+        cout << "Roll Number: " << roll_no << "\n";
+        cout << "Name: " << name << "\n";
     }
-} fast_io_setup;
+};
 
-// Binary Search Function
-int binary_search(vector<int>& arr, int target) {
-    int left = 0, right = arr.size() - 1;
-    while (left <= right) {
-        int mid = left + (right - left) / 2;
-        if (arr[mid] == target) return mid;
-        if (arr[mid] < target) left = mid + 1;
-        else right = mid - 1;
-    }
-    return -1;
-}
+class Test : virtual public Student {
+protected:
+    float test_marks;
 
-// Custom Power Function (Efficient Modular Exponentiation)
-ll power(ll base, ll exp, ll mod = 1e9+7) {
-    ll result = 1;
-    while (exp > 0) {
-        if (exp % 2 == 1) result = (result * base) % mod;
-        base = (base * base) % mod;
-        exp /= 2;
-    }
-    return result;
-}
-
-// Sieve of Eratosthenes for Prime Numbers
-vector<int> sieve(int n) {
-    vector<int> is_prime(n + 1, 1);
-    is_prime[0] = is_prime[1] = 0;
-    for (int i = 2; i * i <= n; i++) {
-        if (is_prime[i]) {
-            for (int j = i * i; j <= n; j += i) is_prime[j] = 0;
+public:
+    // Constructor for Test
+    Test(int r, const string &n, float t_marks) 
+        : Student(r, n) {
+            test_marks = t_marks;
         }
-    }
-    vector<int> primes;
-    for (int i = 2; i <= n; i++) {
-        if (is_prime[i]) primes.push_back(i);
-    }
-    return primes;
-}
 
-// Factorization to Find Prime Divisors of a Number
-vector<int> prime_factors(int n) {
-    vector<int> factors;
-    for (int i = 2; i * i <= n; i++) {
-        while (n % i == 0) {
-            factors.push_back(i);
-            n /= i;
-        }
+    void showTestMarks() const {
+        cout << "Test Marks: " << test_marks << "/100\n";
     }
-    if (n > 1) factors.push_back(n);
-    return factors;
-}
+};
 
-// Square Root Calculation (Integer)
-int integer_sqrt(int n) {
-    int left = 0, right = n, ans = -1;
-    while (left <= right) {
-        int mid = left + (right - left) / 2;
-        if (mid * mid == n) return mid;
-        if (mid * mid < n) {
-            ans = mid;
-            left = mid + 1;
-        } else {
-            right = mid - 1;
+class Sports : virtual public Student {
+protected:
+    float sports_score;
+
+public:
+    // Constructor for Sports
+    Sports(int r, const string &n, float s_score) 
+        : Student(r, n) {
+            sports_score = s_score;
         }
+
+    void showSportsScore() const {
+        cout << "Sports Score: " << sports_score << "/50\n";
     }
-    return ans;
-}
+};
+
+class Results : public Test, public Sports {
+public:
+    // Constructor for Results
+    Results(int r, const string &n, float t_marks, float s_score) 
+        : Student(r, n), Test(r, n, t_marks), Sports(r, n, s_score) {}
+
+    void displayResult() {
+        float total = test_marks + sports_score;
+        showStudentDetails();
+        showTestMarks();
+        showSportsScore();
+        cout << "Total Score: " << total << "/150\n";
+    }
+};
 
 int main() {
-    ll n, coins;
-    cin >> n >> coins;
-    
-    vector<ll> costs(n);
-    for(ll i = 0; i < n; i++) {
-        cin >> costs[i];
-    }
-    
-    sort(costs.begin(), costs.end());
+    int roll_no;
+    string name;
+    float test_marks, sports_score;
 
-    ll count = 0;
-    ll total = 0;
-    
-    for(ll i = 0; i < n; i++) {
-        if(total + costs[i] <= coins) {
-            total += costs[i];
-            count++;
-        }
-        else {
-            break;
-        }
-    }
-    cout << count << endl;
+    cout << "Enter roll number: ";
+    cin >> roll_no;
+    cin.ignore(); // To consume the newline left in the input buffer
+    cout << "Enter name: ";
+    getline(cin, name);
+    cout << "Enter test marks (out of 100): ";
+    cin >> test_marks;
+    cout << "Enter sports score (out of 50): ";
+    cin >> sports_score;
+
+    Results student(roll_no, name, test_marks, sports_score);
+    cout << "\n--- Student Results ---\n";
+    student.displayResult();
+
+    return 0;
 }
-
-
-/*
-  -----     -----    -----    ----   
- |     -   |        |        |    |  
- |     -    -----    -----   |----   
- |     -   |        |        |       
-  -----     -----    -----   |       
-*/

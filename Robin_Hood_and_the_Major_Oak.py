@@ -4,7 +4,7 @@ def count_odds_in_range(l, r):
     
     if r % 2 == 0:
         r -= 1
-    
+    # hello
     if l > r:
         return 0
     

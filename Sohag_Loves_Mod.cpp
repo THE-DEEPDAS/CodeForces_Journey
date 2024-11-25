@@ -2,11 +2,11 @@
 
 #include <bits/stdc++.h>
 using namespace std;
-// #include <ext/pb_ds/assoc_container.hpp>
-// #include <ext/pb_ds/tree_policy.hpp>
-// using namespace __gnu_pbds;
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+using namespace __gnu_pbds;
 // Define an ordered set using PBDS that works in logarithmic time complexity
-// #define ordered_set tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update>
+#define ordered_set tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update>
 
 typedef long long ll;
 const ll INF = numeric_limits<ll>::max();
@@ -57,6 +57,23 @@ ll findBitwiseOR(ll L, ll R) {
     while (msb_p1 == msb_p2) {
         ll res_val = (1LL << msb_p1);
         res += res_val;
+        L -= res_val;
+        R -= res_val;
+        msb_p1 = MSBPosition(L);
+        msb_p2 = MSBPosition(R);
+    }
+    res += (1LL << (max(msb_p1, msb_p2) + 1)) - 1;
+    return res;
+}
+
+// Find bitwise XOR of two numbers
+ll findBitwiseXOR(ll L, ll R) {
+    if (L == R) return 0;
+    ll res = 0;
+    ll msb_p1 = MSBPosition(L);
+    ll msb_p2 = MSBPosition(R);
+    while (msb_p1 == msb_p2) {
+        ll res_val = (1LL << msb_p1);
         L -= res_val;
         R -= res_val;
         msb_p1 = MSBPosition(L);
@@ -132,23 +149,6 @@ void mergeSort(vector<T>& arr, ll left, ll right) {
         mergeSort(arr, mid + 1, right);
         merge(arr, left, mid, right);
     }
-}
-
-// Find bitwise XOR of two numbers
-ll findBitwiseXOR(ll L, ll R) {
-    if (L == R) return 0;
-    ll res = 0;
-    ll msb_p1 = MSBPosition(L);
-    ll msb_p2 = MSBPosition(R);
-    while (msb_p1 == msb_p2) {
-        ll res_val = (1LL << msb_p1);
-        L -= res_val;
-        R -= res_val;
-        msb_p1 = MSBPosition(L);
-        msb_p2 = MSBPosition(R);
-    }
-    res += (1LL << (max(msb_p1, msb_p2) + 1)) - 1;
-    return res;
 }
 
 // Modular exponentiation
@@ -285,26 +285,24 @@ void postorder(TreeNode* root) {
     cout << root->val << ' ';
 }
 
-class A{
-    public: 
-    virtual void fun(){
-        cout << "A" << "\n";
-    }
-};
-
-class B : public A{
-    public:
-    void fun(){
-        cout << "B" << "\n";
-    }
-};
-
 int main() {
-    A a;
-    B b;
-    A *aptr;
-    aptr = &a;
-    aptr->fun();
+    fast_io();
+    ll testcases;
+    cin >> testcases;
+    for (ll testcase = 0; testcase < testcases; ++testcase) {
+        // shaant man thi vichaar to question thay jase!!
+        ll n;
+        cin >> n;
+        // mod ma n - 1 answer lavo che mare
+        // 1 3 5 7
+        ll odd = 1;
+
+        while(n--){
+            cout << odd << " ";
+            odd += 2;
+        }
+        cout << "\n";
+    }
 }
 
 

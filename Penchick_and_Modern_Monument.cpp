@@ -1,8 +1,9 @@
+// બધા માટે રામ રામ, ભગવાનનું નામ લો અને તમારું કાર્ય શરૂ કરો.
+
 #pragma GCC optimize("O2")
 #include <bits/stdc++.h>
 using namespace std;
 typedef long long ll;
-#define MOD 1000000007
 
 // Fast I/O setup
 struct FastIO {
@@ -12,8 +13,9 @@ struct FastIO {
     }
 } fast_io_setup;
 
-// Binary Search Function
-int binary_search(vector<int>& arr, int target) {
+// Generic Binary Search Function
+template <typename T>
+int binary_search(const vector<T>& arr, T target) {
     int left = 0, right = arr.size() - 1;
     while (left <= right) {
         int mid = left + (right - left) / 2;
@@ -25,8 +27,9 @@ int binary_search(vector<int>& arr, int target) {
 }
 
 // Custom Power Function (Efficient Modular Exponentiation)
-ll power(ll base, ll exp, ll mod = 1e9+7) {
-    ll result = 1;
+template <typename T>
+T power(T base, T exp, T mod = static_cast<T>(1e9+7)) {
+    T result = 1;
     while (exp > 0) {
         if (exp % 2 == 1) result = (result * base) % mod;
         base = (base * base) % mod;
@@ -35,7 +38,7 @@ ll power(ll base, ll exp, ll mod = 1e9+7) {
     return result;
 }
 
-// Sieve of Eratosthenes for Prime Numbers
+// Generic Sieve of Eratosthenes for Prime Numbers
 vector<int> sieve(int n) {
     vector<int> is_prime(n + 1, 1);
     is_prime[0] = is_prime[1] = 0;
@@ -52,9 +55,10 @@ vector<int> sieve(int n) {
 }
 
 // Factorization to Find Prime Divisors of a Number
-vector<int> prime_factors(int n) {
-    vector<int> factors;
-    for (int i = 2; i * i <= n; i++) {
+template <typename T>
+vector<T> prime_factors(T n) {
+    vector<T> factors;
+    for (T i = 2; i * i <= n; i++) {
         while (n % i == 0) {
             factors.push_back(i);
             n /= i;
@@ -65,10 +69,11 @@ vector<int> prime_factors(int n) {
 }
 
 // Square Root Calculation (Integer)
-int integer_sqrt(int n) {
-    int left = 0, right = n, ans = -1;
+template <typename T>
+T integer_sqrt(T n) {
+    T left = 0, right = n, ans = -1;
     while (left <= right) {
-        int mid = left + (right - left) / 2;
+        T mid = left + (right - left) / 2;
         if (mid * mid == n) return mid;
         if (mid * mid < n) {
             ans = mid;
@@ -81,57 +86,27 @@ int integer_sqrt(int n) {
 }
 
 int main() {
-    string s;
-    cin >> s;
-    ll n = s.length();
-    
-    // dp[i] = ways to decode string upto index i
-    vector<ll> dp(n + 1, 0);
-    dp[0] = 1;
-    
-    if(s[0] == '*') {
-        dp[1] = 9;  
-    } 
-    else if(s[0] != '0') {
-        dp[1] = 1;
-    }
-    
-    for(int i = 2; i <= n; i++) {
-        char curr = s[i-1];
-        char prev = s[i-2];
-        if(curr == '*') {
-            dp[i] = (dp[i] + dp[i-1] * 9L) % MOD;
-        } 
-        else if(curr != '0') {
-            dp[i] = (dp[i] + dp[i - 1]) % MOD;
+    ll testcases;
+    cin >> testcases;
+
+    for(ll testcase = 0; testcase < testcases; testcase++){
+        ll n;
+        cin >> n;
+
+        map<ll, ll> freq;
+        for (ll i = 0; i < n; i++){
+            int t;
+            cin >> t;
+            freq[t]++;
         }
-        if(prev == '*') {
-            if(curr == '*') {
-                // 1st = 1 thi 9 and 2nd = 2 thi 6
-                dp[i] = (dp[i] + dp[i-2] * 15L) % MOD;
-            } 
-            else {
-                // agar * 1 so np and 2 to char <= 6
-                ll ways = curr <= '6' ? 2 : 1;
-                dp[i] = (dp[i] + dp[i-2] * ways) % MOD;
-            }
-        } 
-        else if(prev == '1' || prev == '2') {
-            if(curr == '*') {
-                ll limit = (prev == '1') ? 9 : 6;
-                dp[i] = (dp[i] + dp[i-2] * limit) % MOD;
-            } 
-            else {
-                // sado number che
-                int num = (prev - '0') * 10 + (curr - '0');
-                if(num <= 26) {
-                    dp[i] = (dp[i] + dp[i-2]) % MOD;
-                }
-            }
+
+        ll minus = 1;
+        for(auto& f: freq){
+            minus = max(minus, f.second);
         }
+
+        cout << n - minus << "\n";
     }
-    
-    cout << dp[n] << endl;
 }
 
 

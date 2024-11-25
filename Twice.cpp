@@ -13,8 +13,9 @@ struct FastIO {
     }
 } fast_io_setup;
 
-// Binary Search Function
-int binary_search(vector<int>& arr, int target) {
+// Generic Binary Search Function
+template <typename T>
+int binary_search(const vector<T>& arr, T target) {
     int left = 0, right = arr.size() - 1;
     while (left <= right) {
         int mid = left + (right - left) / 2;
@@ -26,8 +27,9 @@ int binary_search(vector<int>& arr, int target) {
 }
 
 // Custom Power Function (Efficient Modular Exponentiation)
-ll power(ll base, ll exp, ll mod = 1e9+7) {
-    ll result = 1;
+template <typename T>
+T power(T base, T exp, T mod = static_cast<T>(1e9+7)) {
+    T result = 1;
     while (exp > 0) {
         if (exp % 2 == 1) result = (result * base) % mod;
         base = (base * base) % mod;
@@ -36,7 +38,7 @@ ll power(ll base, ll exp, ll mod = 1e9+7) {
     return result;
 }
 
-// Sieve of Eratosthenes for Prime Numbers
+// Generic Sieve of Eratosthenes for Prime Numbers
 vector<int> sieve(int n) {
     vector<int> is_prime(n + 1, 1);
     is_prime[0] = is_prime[1] = 0;
@@ -53,9 +55,10 @@ vector<int> sieve(int n) {
 }
 
 // Factorization to Find Prime Divisors of a Number
-vector<int> prime_factors(int n) {
-    vector<int> factors;
-    for (int i = 2; i * i <= n; i++) {
+template <typename T>
+vector<T> prime_factors(T n) {
+    vector<T> factors;
+    for (T i = 2; i * i <= n; i++) {
         while (n % i == 0) {
             factors.push_back(i);
             n /= i;
@@ -66,10 +69,11 @@ vector<int> prime_factors(int n) {
 }
 
 // Square Root Calculation (Integer)
-int integer_sqrt(int n) {
-    int left = 0, right = n, ans = -1;
+template <typename T>
+T integer_sqrt(T n) {
+    T left = 0, right = n, ans = -1;
     while (left <= right) {
-        int mid = left + (right - left) / 2;
+        T mid = left + (right - left) / 2;
         if (mid * mid == n) return mid;
         if (mid * mid < n) {
             ans = mid;
@@ -88,23 +92,23 @@ int main() {
     for(ll testcase = 0; testcase < testcases; testcase++){
         ll n;
         cin >> n;
-
+ 
         vector<ll> a(n);
         for(ll i = 0; i < n; i++) cin >> a[i];
-
+ 
         map<ll, ll> freq;
         for (ll i = 0; i < n; i++){
             freq[a[i]]++;
         }
-
+ 
         ll ans = 0;
-
+ 
         for (auto& f: freq){
             if(f.second >= 2){
                 ans += f.second / 2;
             }
         }
-
+ 
         cout << ans << "\n";
     }
 }
