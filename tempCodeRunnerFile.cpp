@@ -1,1 +1,1 @@
-Define an ordered set using PBDS that works in logarithmic time complexity
+sort(words.begin(), words.end());

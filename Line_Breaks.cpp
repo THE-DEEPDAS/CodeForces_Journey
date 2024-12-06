@@ -291,22 +291,29 @@ int main() {
     cin >> testcases;
     for (ll testcase = 0; testcase < testcases; ++testcase) {
         // shaant man thi vichaar to question thay jase!!
-        string s;
-        cin >> s;
+        ll n, m;
+        cin >> n >> m;
 
-        ll n = s.size();
+        vector<ll> words(n);
+        for (ll i = 0; i < n; i++){
+            string s;
+            cin >> s;
 
-        string copystr = "";
-        while(copystr != s){
-            copystr = s;
-            for (ll i = 1; i < n; i++){
-            if((s[i - 1] - '0') < (s[i] - '0') - 1 && s[i] != '0'){
-                s[i] -= 1;
-                swap(s[i - 1], s[i]);
+            words[i] = s.size();
+        }
+        // sort(words.begin(), words.end());
+
+        ll fit = 0;
+        ll cnt = 0;
+        for(ll integ : words){
+            if(integ + fit <= m){
+                fit += integ;
+                cnt++;
             }
+            else
+                break;
         }
-        }
-        cout << s << "\n";
+        cout << cnt << '\n';
     }
 }
 

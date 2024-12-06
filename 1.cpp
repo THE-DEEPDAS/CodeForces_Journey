@@ -291,22 +291,38 @@ int main() {
     cin >> testcases;
     for (ll testcase = 0; testcase < testcases; ++testcase) {
         // shaant man thi vichaar to question thay jase!!
-        string s;
-        cin >> s;
+        ll n;
+        cin >> n;
 
-        ll n = s.size();
+        vector<ll> a(n);
+        ll cnt = 0;
+        for (ll i = 0; i < n; i++){
+            ll integ;
+            cin >> integ;
 
-        string copystr = "";
-        while(copystr != s){
-            copystr = s;
-            for (ll i = 1; i < n; i++){
-            if((s[i - 1] - '0') < (s[i] - '0') - 1 && s[i] != '0'){
-                s[i] -= 1;
-                swap(s[i - 1], s[i]);
+            cnt += integ;
+        }
+
+        if(cnt % n != 0){
+            cout << "NO\n";
+            continue;
+        }
+        
+        ll target = cnt / n;
+        ll prefix_sum = 0;
+        bool possible = true;
+
+        for (int i = 0; i < n; i++) {
+            prefix_sum += a[i];
+            if (prefix_sum < (i + 1) * target) {
+                possible = false;
+                break;
             }
         }
-        }
-        cout << s << "\n";
+
+        if(!possible) cout << "YES\n";
+        else
+            cout << "NO\n";
     }
 }
 

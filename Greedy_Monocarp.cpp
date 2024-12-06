@@ -291,22 +291,37 @@ int main() {
     cin >> testcases;
     for (ll testcase = 0; testcase < testcases; ++testcase) {
         // shaant man thi vichaar to question thay jase!!
-        string s;
-        cin >> s;
+        ll n, k;
+        cin >> n >> k;
 
-        ll n = s.size();
+        vector<ll> a(n);
+        for (ll i = 0; i < n; i++){
+            cin >> a[i];
+        }
 
-        string copystr = "";
-        while(copystr != s){
-            copystr = s;
-            for (ll i = 1; i < n; i++){
-            if((s[i - 1] - '0') < (s[i] - '0') - 1 && s[i] != '0'){
-                s[i] -= 1;
-                swap(s[i - 1], s[i]);
-            }
+        ll ans = 0, real_ans = 0, idx = 0;
+        sort(a.rbegin(), a.rend());
+
+        if(a[0] >= k){
+            cout << 0 << "\n";
+            continue;
         }
+
+        while(ans < k && idx < n){
+            real_ans = ans;
+            ans += a[idx];
+            idx++;
         }
-        cout << s << "\n";
+
+        if(ans > k){
+            cout << k - real_ans << "\n";
+        }
+        else if(ans == k){
+            cout << 0 << "\n";
+        }
+        else{
+            cout << k - ans << "\n";
+        }
     }
 }
 

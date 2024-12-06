@@ -291,22 +291,47 @@ int main() {
     cin >> testcases;
     for (ll testcase = 0; testcase < testcases; ++testcase) {
         // shaant man thi vichaar to question thay jase!!
-        string s;
-        cin >> s;
+        ll n;
+        cin >> n;
 
-        ll n = s.size();
+        vector<ll> colours(n);
+        map<ll, ll> freq;
 
-        string copystr = "";
-        while(copystr != s){
-            copystr = s;
-            for (ll i = 1; i < n; i++){
-            if((s[i - 1] - '0') < (s[i] - '0') - 1 && s[i] != '0'){
-                s[i] -= 1;
-                swap(s[i - 1], s[i]);
+        for (ll i = 0; i < n; i++){
+            cin >> colours[i];
+            freq[colours[i]]++;
+        }
+
+        vector<ll> fc;
+        for(auto& ent: freq){
+            fc.push_back(ent.second);
+        }
+
+        sort(fc.begin(), fc.end());
+        ll alice_score = 0, taken = 0;
+        for (ll i = 0; i < fc.size(); i++){
+            ll cnt = fc[i];
+            if(cnt == 1 && taken % 2 == 0){
+                alice_score += 2;
+                taken++;
+            }
+            else if(cnt == 1){
+                taken++;
             }
         }
+
+        for (ll i = 0; i < fc.size(); i++){
+            if(fc[i] > 1){
+                if(fc[i] % 2 == 0){
+                    alice_score += 1;
+                }
+                else{
+                    alice_score += 1;
+                }
+            }
         }
-        cout << s << "\n";
+
+        cout << alice_score << "\n";
     }
 }
 
