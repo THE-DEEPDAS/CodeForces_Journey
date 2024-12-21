@@ -291,22 +291,6 @@ int main() {
     cin >> testcases;
     for (ll testcase = 0; testcase < testcases; ++testcase) {
         // shaant man thi vichaar to question thay jase!!
-        string s;
-        cin >> s;
-
-        ll n = s.size();
-
-        string copystr = "";
-        while(copystr != s){
-            copystr = s;
-            for (ll i = 1; i < n; i++){
-            if((s[i - 1] - '0') < (s[i] - '0') - 1 && s[i] != '0'){
-                s[i] -= 1;
-                swap(s[i - 1], s[i]);
-            }
-        }
-        }
-        cout << s << "\n";
     }
 }
 
