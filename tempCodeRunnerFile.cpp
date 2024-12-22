@@ -1,1 +1,1 @@
-sort(words.begin(), words.end());
+     ll high = prices.size() - 1;

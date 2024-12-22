@@ -364,41 +364,26 @@ int main()
     for (ll testcase = 0; testcase < testcases; ++testcase)
     {
         // shaant man thi vichaar to question thay jase!!
-        ll n, k;
-        cin >> n >> k;
+        ll n, x, y;
+        cin >> n >> x >> y;
 
         vector<ll> a(n);
-        vector<ll> b(n);
+        ll total = 0;
         for (ll i = 0; i < n; i++)
-            cin >> a[i];
-        for (ll i = 0; i < n; i++)
-            cin >> b[i];
-
-        ll ans = 0, left = 1, right = max(*max_element(a.begin(), a.end()), *max_element(b.begin(), b.end()));
-        while (left <= right)
         {
-            ll mid = left + (right - left) / 2;
-            ll price = mid, neg = 0, total = 0;
-            for (int i = 0; i < n; i++)
-            {
-                if (price <= a[i])
-                {
-                    total++; 
-                }
-                else if (price <= b[i])
-                {
-                    total++; 
-                    neg++;
-                }
-            }
+            cin >> a[i];
+            total += a[i];
+        }
 
-            if (neg <= k)
-            {
-                ans = max(ans, price * total);
-                left = mid + 1;
-            }
-            else
-                right = mid - 1;
+        ll ans = 0;
+        sort(a.begin(), a.end());
+        for (ll i = 0; i < n; i++)
+        {
+            ll tmin = total - y - a[i];
+            ll tmax = total - x - a[i];
+            auto left = lower_bound(a.begin() + i + 1, a.end(), tmin);
+            auto right = upper_bound(a.begin() + i + 1, a.end(), tmax);
+            ans += (right - left);
         }
         cout << ans << "\n";
     }

@@ -291,6 +291,38 @@ int main() {
     cin >> testcases;
     for (ll testcase = 0; testcase < testcases; ++testcase) {
         // shaant man thi vichaar to question thay jase!!
+        ll n, m, q;
+        cin >> n >> m >> q;
+
+        vector<ll> a(q);
+        for (ll i = 0; i < q; i++)
+            cin >> a[i];
+
+        set<ll> pos = {m};
+        for(ll i = 0; i < q; i++) {
+            set<ll> newPos;
+            ll movePos = a[i];
+            // agad pachad ke joker ne move karavyo
+            for(ll p : pos){
+                if(movePos < p) {
+                    newPos.insert(p - 1);  
+                    newPos.insert(p);      
+                }
+                if(movePos == p) {
+                    newPos.insert(1);  
+                    newPos.insert(n);  
+                }
+                if(movePos > p) {
+                    newPos.insert(p + 1);  
+                    newPos.insert(p);      
+                }
+            }
+            
+            pos = newPos;
+            cout << pos.size();
+            if(i < q - 1) cout << " ";
+        }
+        cout << "\n";
     }
 }
 

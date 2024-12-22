@@ -291,7 +291,6 @@ int main() {
     cin >> testcases;
     for (ll testcase = 0; testcase < testcases; ++testcase) {
         // shaant man thi vichaar to question thay jase!!
-        
     }
 }
 
