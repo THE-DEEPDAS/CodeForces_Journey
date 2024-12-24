@@ -285,12 +285,21 @@ void postorder(TreeNode* root) {
     cout << root->val << ' ';
 }
 
+ll coins(ll n){
+    if(n <= 3) return 1;
+    return coins(n / 4) * 2;
+}
+
 int main() {
     fast_io();
     ll testcases;
     cin >> testcases;
     for (ll testcase = 0; testcase < testcases; ++testcase) {
         // shaant man thi vichaar to question thay jase!!
+        ll n;
+        cin >> n;
+
+        cout << coins(n) << "\n";
     }
 }
 
