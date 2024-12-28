@@ -1,51 +1,68 @@
 #include <bits/stdc++.h>
 using namespace std;
 typedef long long ll;
+const ll MOD = 1e9 + 7;
 
-void solve() {
-    int n;
-    cin >> n;
-    vector<ll> a(n);
-    int special = -1;
-    ll special_val = 0;
+// Fast I/O setup
+inline void fast_io() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+}
+
+vector<ll> precompute_factorials() {
+    vector<ll> fact(101);
+    fact[0] = 1;
+    for(ll i = 1; i <= 100; i++) {
+        fact[i] = i * fact[i-1];
+    }
+    return fact;
+}
+
+ll count_divisors(ll n) {
+    if(n == 1) return 1;
     
-    for(int i = 0; i < n; i++) {
-        cin >> a[i];
-        if(a[i] != 1 && a[i] != -1) {
-            special = i;
-            special_val = a[i];
-            a[i] = 0;
+    ll result = 1;
+    ll count = 0;
+    while(n % 2 == 0) {
+        count++;
+        n = n >> 1;  
+    }
+    if(count > 0) {
+        result *= (count + 1);
+    }
+    
+    for(ll i = 3; i * i <= n; i += 2) {
+        count = 0;
+        while(n % i == 0) {
+            count++;
+            n /= i;
+        }
+        if(count > 0) {
+            result *= (count + 1);
         }
     }
     
-    set<ll> sums = {0};
-    ll curr = 0;
-    vector<ll> prefix = {0};
-    
-    for(ll x : a) {
-        curr += x;
-        prefix.push_back(curr);
+    if(n > 1) {
+        result *= 2;  
     }
     
-    for(int i = 0; i <= n; i++) {
-        for(int j = i + 1; j <= n; j++) {
-            ll sum = prefix[j] - prefix[i];
-            if(special != -1 && i <= special && special < j) {
-                sum += special_val;
-            }
-            sums.insert(sum);
-        }
-    }
-    
-    cout << sums.size() << '\n';
-    for(ll x : sums) cout << x << ' ';
-    cout << '\n';
+    return result;
 }
 
 int main() {
-    ios::sync_with_stdio(0);
-    cin.tie(0);
-    int t;
-    cin >> t;
-    while(t--) solve();
+    fast_io();
+    vector<ll> factorials = precompute_factorials();
+    ll N, M;
+    cin >> N >> M;
+    
+    for(ll i = 0; i < N; i++) {
+        ll Ai;
+        cin >> Ai;
+        ll result = count_divisors(Ai * factorials[M]) % MOD;
+        cout << result;
+        if(i < N-1) cout << " ";
+    }
+    cout << "\n";
+    
+    return 0;
 }

@@ -291,6 +291,37 @@ int main() {
     cin >> testcases;
     for (ll testcase = 0; testcase < testcases; ++testcase) {
         // shaant man thi vichaar to question thay jase!!
+        ll n;
+        cin >> n;
+
+        vector<ll> fixed_count(2 * n + 1, 0);
+        vector<pair<ll,ll>> ranges(n);
+        for(ll i = 0; i < n; i++) {
+            ll left, right;
+            cin >> left >> right;
+            ranges[i] = {left, right};
+            if(left == right) {
+                fixed_count[left]++;
+            }
+        }
+        
+        vector<ll> prefix_fixed(2*n + 1, 0);
+        for(ll i = 1; i <= 2 * n; i++) {
+            prefix_fixed[i] = prefix_fixed[i-1] + (fixed_count[i] > 0);
+        }
+        
+        for(ll i = 0; i < n; i++) {
+            ll left = ranges[i].first;
+            ll right = ranges[i].second;
+            if(left == right) {
+                cout << (fixed_count[left] == 1 ? '1' : '0');
+            } 
+            else {
+                ll fixed_in_range = prefix_fixed[right] - prefix_fixed[left-1];
+                cout << (right - left + 1 > fixed_in_range ? '1' : '0');
+            }
+        }
+        cout << "\n";
     }
 }
 
