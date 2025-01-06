@@ -287,34 +287,23 @@ void postorder(TreeNode* root) {
 
 int main() {
     fast_io();
-    ll t;
-    cin >> t;
-    while(t--) {
-        ll l, r;
-        cin >> l >> r;
-    
-        if(r - l <= 2) {
-            cout << r << " " << r-1 << " " << l << "\n";
-            continue;
-        }
-        ll a = r, b = r - 1, c;
+    ll testcases;
+    cin >> testcases;
+    for (ll testcase = 0; testcase < testcases; ++testcase) {
+        // shaant man thi vichaar to question thay jase!!
+        // 0 n times, 1 n-1 times em chaltu jase
+        ll n, m;
+        cin >> n >> m;
 
-        ll best_xor = 0;
-        ll best_c = r - 2;
-        
-        vector<ll> possiblities = {r - 2, l, l + 1, (l + r) / 2};
-        for(ll possiblity : possiblities) {
-            if(possiblity >= l && possiblity <= r && possiblity != a && possiblity != b) {
-                ll curr_xor = (a ^ b) + (b ^ possiblity) + (a ^ possiblity);
-                if(curr_xor > best_xor) {
-                    best_xor = curr_xor;
-                    best_c = possiblity;
-                }
-            }
-        }
-        cout << a << " " << b << " " << best_c << "\n";
+        // row ne column na mex ma ek number 2 var aavano
+        ll ans = 0;
+
+        ans = max(n, m) + 1;
+
+        cout << ans << "\n";
     }
 }
+
 
 /*
   -----     -----    -----    ----   
