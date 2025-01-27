@@ -285,67 +285,91 @@ void postorder(TreeNode* root) {
     cout << root->val << ' ';
 }
 
-// Count components in graph after removing vertices v1 and v2
-int countComponents(vector<vector<int>>& adj, int v1, int v2, int n) {
-    vector<bool> visited(n + 1, false);
-    visited[v1] = visited[v2] = true;
-    int components = 0;
-
-    function<void(int)> dfs = [&](int v) {
-        visited[v] = true;
-        for (int u : adj[v]) {
-            if (!visited[u]) {
-                dfs(u);
-            }
-        }
-    };
-
-    for (int i = 1; i <= n; i++) {
-        if (!visited[i]) {
-            dfs(i);
-            components++;
-        }
-    }
-    return components;
-}
-
-void solve() {
-    int n;
-    cin >> n;
-    vector<vector<int>> adj(n + 1);
-    vector<int> degree(n + 1, 0);
-    
-    // Read edges and create adjacency list
-    for (int i = 0; i < n - 1; i++) {
-        int u, v;
-        cin >> u >> v;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
-        degree[u]++;
-        degree[v]++;
-    }
-    
-    int maxComponents = 0;
-    // Try all pairs of vertices
-    for (int i = 1; i <= n; i++) {
-        for (int j = i + 1; j <= n; j++) {
-            if (degree[i] > 1 && degree[j] > 1) {
-                maxComponents = max(maxComponents, countComponents(adj, i, j, n));
-            }
-        }
-    }
-    
-    cout << maxComponents << "\n";
-}
-
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    
-    int t;
-    cin >> t;
-    while (t--) {
-        solve();
+    fast_io();
+    ll testcases;
+    cin >> testcases;
+    for (ll testcase = 0; testcase < testcases; ++testcase) {
+        ll n, m;
+        cin >> n >> m;
+
+        vector<vector<ll>> cards(n, vector<ll>(m));
+        for (ll i = 0; i < n; i++) {
+            for (ll j = 0; j < m; j++) {
+                cin >> cards[i][j];
+            }
+        }
+
+        for (ll i = 0; i < n; i++) {
+            sort(cards[i].begin(), cards[i].end());
+        }
+
+        vector<ll> current_indices(n, 0);  
+        vector<ll> result;                 
+        vector<bool> used(n, false);       
+        ll last_played = -1;              
+        bool possible = true;
+
+        for (ll order = 0; order < n; order++) {
+            ll best_cow = -1;
+            ll smallest_valid = INFLL;
+
+            for (ll cow = 0; cow < n; cow++) {
+                if (used[cow]) continue;
+                while (current_indices[cow] < m && cards[cow][current_indices[cow]] <= last_played) {
+                    current_indices[cow]++;
+                }
+
+                if (current_indices[cow] < m && 
+                    cards[cow][current_indices[cow]] < smallest_valid) {
+                    smallest_valid = cards[cow][current_indices[cow]];
+                    best_cow = cow;
+                }
+            }
+
+            if (best_cow == -1) {
+                possible = false;
+                break;
+            }
+
+            result.push_back(best_cow + 1);  
+            used[best_cow] = true;
+            last_played = smallest_valid;
+        }
+
+        if (possible) {
+            vector<ll> card_pos = current_indices;
+            last_played = -1;
+            
+            for (ll round = 0; round < m; round++) {
+                for (ll i = 0; i < n; i++) {
+                    ll cow = result[i] - 1;
+                    if (card_pos[cow] >= m || cards[cow][card_pos[cow]] <= last_played) {
+                        possible = false;
+                        break;
+                    }
+                    last_played = cards[cow][card_pos[cow]];
+                    card_pos[cow]++;
+                }
+                if (!possible) break;
+            }
+        }
+
+        if (!possible) {
+            cout << -1 << "\n";
+        } 
+        else {
+            for (ll i = 0; i < n; i++) {
+                cout << result[i] << (i == n-1 ? "\n" : " ");
+            }
+        }
     }
-    return 0;
 }
+
+/*
+  -----     -----    -----    ----   
+ |     -   |        |        |    |  
+ |     -    -----    -----   |----   
+ |     -   |        |        |       
+  -----     -----    -----   |       
+*/

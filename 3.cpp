@@ -1,129 +1,405 @@
+// બધા માટે રામ રામ, ભગવાનનું નામ લો અને તમારું કાર્ય શરૂ કરો.
+
 #include <bits/stdc++.h>
 using namespace std;
+// #include <ext/pb_ds/assoc_container.hpp>
+// #include <ext/pb_ds/tree_policy.hpp>
+// using namespace __gnu_pbds;
+// Define an ordered set using PBDS that works in logarithmic time complexity
+// #define ordered_set tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update>
+
 typedef long long ll;
+const ll INF = numeric_limits<ll>::max();
+const ll INFLL = numeric_limits<long long>::max();
+const ll MOD = 1e9 + 7;
 
-// Segment tree node
-struct Node {
-    ll minVal = LLONG_MAX;
-    ll maxVal = LLONG_MIN;
-    
-    void merge(const Node& left, const Node& right) {
-        minVal = min(left.minVal, right.minVal);
-        maxVal = max(left.maxVal, right.maxVal);
-    }
-};
+// Fast I/O setup
+inline void fast_io()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+}
 
-class SegmentTree {
-    vector<Node> tree;
-    int n;
-    
-    void build(int node, int start, int end, vector<ll>& arr) {
-        if(start == end) {
-            tree[node].minVal = tree[node].maxVal = arr[start];
-            return;
-        }
-        
-        int mid = (start + end) / 2;
-        build(2*node+1, start, mid, arr);
-        build(2*node+2, mid+1, end, arr);
-        tree[node].merge(tree[2*node+1], tree[2*node+2]);
+// Find GCD of two numbers
+template <typename T>
+T gcd(T a, T b)
+{
+    return b == 0 ? a : gcd(b, a % b);
+}
+
+// Find LCM of two numbers
+template <typename T>
+T lcm(T a, T b)
+{
+    return a / gcd(a, b) * b;
+}
+
+// Check if a number is a power of two
+template <typename T>
+bool is_power_of_two(T n)
+{
+    return n && !(n & (n - 1));
+}
+
+// Calculate MSB position
+ll MSBPosition(ll N)
+{
+    ll msb_p = -1;
+    while (N)
+    {
+        N = N >> 1;
+        msb_p++;
     }
-    
-    Node query(int node, int start, int end, int l, int r) {
-        if(r < start || l > end) {
-            return Node();
-        }
-        
-        if(l <= start && end <= r) {
-            return tree[node];
-        }
-        
-        int mid = (start + end) / 2;
-        Node left = query(2*node+1, start, mid, l, r);
-        Node right = query(2*node+2, mid+1, end, l, r);
-        
-        Node result;
-        result.merge(left, right);
-        return result;
+    return msb_p;
+}
+
+// Find bitwise OR of two numbers
+ll findBitwiseOR(ll L, ll R)
+{
+    if (L == R)
+        return L;
+    ll res = 0;
+    ll msb_p1 = MSBPosition(L);
+    ll msb_p2 = MSBPosition(R);
+    while (msb_p1 == msb_p2)
+    {
+        ll res_val = (1LL << msb_p1);
+        res += res_val;
+        L -= res_val;
+        R -= res_val;
+        msb_p1 = MSBPosition(L);
+        msb_p2 = MSBPosition(R);
     }
-    
-    void update(int node, int start, int end, int idx, ll val) {
-        if(start == end) {
-            tree[node].minVal = tree[node].maxVal = val;
-            return;
-        }
-        
-        int mid = (start + end) / 2;
-        if(idx <= mid)
-            update(2*node+1, start, mid, idx, val);
+    res += (1LL << (max(msb_p1, msb_p2) + 1)) - 1;
+    return res;
+}
+
+// Modular exponentiation
+template <typename T>
+T mod_power(T base, T exp, T mod)
+{
+    T result = 1;
+    while (exp > 0)
+    {
+        if (exp % 2 == 1)
+            result = (result * base) % mod;
+        base = (base * base) % mod;
+        exp /= 2;
+    }
+    return result;
+}
+
+// Modular multiplicative inverse
+template <typename T>
+T mod_mul_inverse(T a, T b)
+{
+    return mod_power(a, b - 2, b);
+}
+
+// Heapify a subtree
+void heapify(vector<ll> &arr, ll n, ll i)
+{
+    ll largest = i;
+    ll left = 2 * i + 1;
+    ll right = 2 * i + 2;
+    if (left < n && arr[left] > arr[largest])
+        largest = left;
+    if (right < n && arr[right] > arr[largest])
+        largest = right;
+    if (largest != i)
+    {
+        swap(arr[i], arr[largest]);
+        heapify(arr, n, largest);
+    }
+}
+
+// Perform heap sort
+void heapSort(vector<ll> &arr)
+{
+    ll n = arr.size();
+    for (ll i = n / 2 - 1; i >= 0; --i)
+        heapify(arr, n, i);
+    for (ll i = n - 1; i >= 0; --i)
+    {
+        swap(arr[0], arr[i]);
+        heapify(arr, i, 0);
+    }
+}
+// Merge two sorted subarrays
+template <typename T>
+void merge(vector<T> &arr, ll left, ll mid, ll right)
+{
+    ll n1 = mid - left + 1;
+    ll n2 = right - mid;
+    vector<T> L(n1), R(n2);
+    for (ll i = 0; i < n1; ++i)
+        L[i] = arr[left + i];
+    for (ll j = 0; j < n2; ++j)
+        R[j] = arr[mid + 1 + j];
+    ll i = 0, j = 0, k = left;
+    while (i < n1 && j < n2)
+    {
+        if (L[i] <= R[j])
+            arr[k++] = L[i++];
         else
-            update(2*node+2, mid+1, end, idx, val);
-            
-        tree[node].merge(tree[2*node+1], tree[2*node+2]);
+            arr[k++] = R[j++];
     }
-    
-public:
-    SegmentTree(vector<ll>& arr) {
-        n = arr.size();
-        tree.resize(4*n);
-        build(0, 0, n-1, arr);
-    }
-    
-    Node query(int l, int r) {
-        return query(0, 0, n-1, l, r);
-    }
-    
-    void update(int idx, ll val) {
-        update(0, 0, n-1, idx, val);
-    }
-};
+    while (i < n1)
+        arr[k++] = L[i++];
+    while (j < n2)
+        arr[k++] = R[j++];
+}
 
-ll findMaxConvenience(SegmentTree& st, int n) {
-    ll maxConvenience = 0;
-    
-    // Try all possible segments
-    for(int len = 1; len <= min(3, n); len++) {
-        for(int l = 0; l + len - 1 < n; l++) {
-            int r = l + len - 1;
-            Node range = st.query(l, r);
-            ll convenience = range.maxVal - range.minVal - (r - l);
-            maxConvenience = max(maxConvenience, convenience);
+// MergeSort implementation
+template <typename T>
+void mergeSort(vector<T> &arr, ll left, ll right)
+{
+    if (left < right)
+    {
+        ll mid = left + (right - left) / 2;
+        mergeSort(arr, left, mid);
+        mergeSort(arr, mid + 1, right);
+        merge(arr, left, mid, right);
+    }
+}
+
+// Find bitwise XOR of two numbers
+ll findBitwiseXOR(ll L, ll R)
+{
+    if (L == R)
+        return 0;
+    ll res = 0;
+    ll msb_p1 = MSBPosition(L);
+    ll msb_p2 = MSBPosition(R);
+    while (msb_p1 == msb_p2)
+    {
+        ll res_val = (1LL << msb_p1);
+        L -= res_val;
+        R -= res_val;
+        msb_p1 = MSBPosition(L);
+        msb_p2 = MSBPosition(R);
+    }
+    res += (1LL << (max(msb_p1, msb_p2) + 1)) - 1;
+    return res;
+}
+
+// Perform binary search on a vector
+template <typename T>
+T binary_search(const vector<T> &arr, T target)
+{
+    T left = 0, right = arr.size() - 1;
+    while (left <= right)
+    {
+        T mid = left + (right - left) / 2;
+        if (arr[mid] == target)
+            return mid;
+        if (arr[mid] < target)
+            left = mid + 1;
+        else
+            right = mid - 1;
+    }
+    return -1;
+}
+
+// Calculate lleger square root
+template <typename T>
+T integer_sqrt(T n)
+{
+    T left = 0, right = n, ans = -1;
+    while (left <= right)
+    {
+        T mid = left + (right - left) / 2;
+        if (mid * mid == n)
+            return mid;
+        if (mid * mid < n)
+        {
+            ans = mid;
+            left = mid + 1;
+        }
+        else
+        {
+            right = mid - 1;
         }
     }
-    
-    return maxConvenience;
+    return ans;
+}
+
+// Generate all primes up to n using the Sieve of Eratosthenes
+template <typename T>
+vector<T> sieve(T n)
+{
+    vector<T> is_prime(n + 1, 1);
+    is_prime[0] = is_prime[1] = 0;
+    for (T i = 2; i * i <= n; i++)
+    {
+        if (is_prime[i])
+        {
+            for (T j = i * i; j <= n; j += i)
+                is_prime[j] = 0;
+        }
+    }
+    vector<T> primes;
+    for (T i = 2; i <= n; i++)
+    {
+        if (is_prime[i])
+            primes.push_back(i);
+    }
+    return primes;
+}
+
+// Perform BFS on a graph
+void bfs(ll start, const vector<vector<ll>> &adj)
+{
+    vector<bool> visited(adj.size(), false);
+    queue<ll> q;
+    q.push(start);
+    visited[start] = true;
+    while (!q.empty())
+    {
+        ll node = q.front();
+        q.pop();
+        cout << node << ' ';
+        for (ll neighbor : adj[node])
+        {
+            if (!visited[neighbor])
+            {
+                visited[neighbor] = true;
+                q.push(neighbor);
+            }
+        }
+    }
+}
+
+// Perform DFS on a graph
+void dfs(ll node, const vector<vector<ll>> &adj, vector<bool> &visited)
+{
+    visited[node] = true;
+    cout << node << ' ';
+    for (ll neighbor : adj[node])
+    {
+        if (!visited[neighbor])
+        {
+            dfs(neighbor, adj, visited);
+        }
+    }
+}
+
+// Definition of the TreeNode class
+class TreeNode
+{
+public:
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+
+    // Constructor for creating a new node
+    TreeNode(int value) : val(value), left(nullptr), right(nullptr) {}
+};
+
+// Preorder tree traversal
+void preorder(TreeNode *root)
+{
+    if (!root)
+        return;
+    cout << root->val << ' ';
+    preorder(root->left);
+    preorder(root->right);
+}
+
+// Inorder tree traversal
+void inorder(TreeNode *root)
+{
+    if (!root)
+        return;
+    inorder(root->left);
+    cout << root->val << ' ';
+    inorder(root->right);
+}
+
+// Postorder tree traversal
+void postorder(TreeNode *root)
+{
+    if (!root)
+        return;
+    postorder(root->left);
+    postorder(root->right);
+    cout << root->val << ' ';
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-    cout.tie(nullptr);
-    
-    int t;
-    cin >> t;
-    
-    while(t--) {
-        int n, q;
-        cin >> n >> q;
-        
-        vector<ll> arr(n);
-        for(int i = 0; i < n; i++) {
-            cin >> arr[i];
+    fast_io();
+    ll testcases;
+    cin >> testcases;
+    while (testcases--) {
+        ll n, l, r;
+        cin >> n >> l >> r;
+        l--; r--; // Convert to 0-based indexing
+
+        vector<ll> a(n);
+        for (ll i = 0; i < n; i++) {
+            cin >> a[i];
+        }
+
+        // Store elements in [l,r] with their indices
+        vector<pair<ll,ll>> segment;
+        for(ll i = l; i <= r; i++) {
+            segment.push_back({a[i], i});
         }
         
-        // Build segment tree
-        SegmentTree st(arr);
-        cout << findMaxConvenience(st, n) << '\n';
+        // Sort segment elements by value (descending)
+        sort(segment.begin(), segment.end(), greater<pair<ll,ll>>());
         
-        // Process queries
-        while(q--) {
-            int p;
-            ll x;
-            cin >> p >> x;
-            p--;
-            st.update(p, x);
-            cout << findMaxConvenience(st, n) << '\n';
+        // Find smallest elements in entire array with their indices
+        vector<pair<ll,ll>> all;
+        for(ll i = 0; i < n; i++) {
+            all.push_back({a[i], i});
         }
+        sort(all.begin(), all.end());
+
+        // Create subsequence for reversal
+        vector<ll> indices;
+        ll ptr1 = 0, ptr2 = 0;
+        while(ptr1 < segment.size() && ptr2 < n) {
+            if(segment[ptr1].first > all[ptr2].first && 
+               all[ptr2].second != segment[ptr1].second) {
+                indices.push_back(segment[ptr1].second);
+                indices.push_back(all[ptr2].second);
+                ptr1++;
+                ptr2++;
+            } else {
+                ptr2++;
+            }
+        }
+
+        // Remove duplicates and sort indices
+        sort(indices.begin(), indices.end());
+        indices.erase(unique(indices.begin(), indices.end()), indices.end());
+
+        // If beneficial indices found, reverse the subsequence
+        if(!indices.empty()) {
+            vector<ll> values;
+            for(ll idx : indices) {
+                values.push_back(a[idx]);
+            }
+            reverse(values.begin(), values.end());
+            for(ll i = 0; i < indices.size(); i++) {
+                a[indices[i]] = values[i];
+            }
+        }
+
+        // Calculate sum of segment [l,r]
+        ll sum = 0;
+        for(ll i = l; i <= r; i++) {
+            sum += a[i];
+        }
+        
+        cout << sum << "\n";
     }
-    return 0;
 }
+/*
+  -----     -----    -----    ----
+ |     -   |        |        |    |
+ |     -    -----    -----   |----
+ |     -   |        |        |
+  -----     -----    -----   |
+*/

@@ -285,67 +285,35 @@ void postorder(TreeNode* root) {
     cout << root->val << ' ';
 }
 
-// Count components in graph after removing vertices v1 and v2
-int countComponents(vector<vector<int>>& adj, int v1, int v2, int n) {
-    vector<bool> visited(n + 1, false);
-    visited[v1] = visited[v2] = true;
-    int components = 0;
-
-    function<void(int)> dfs = [&](int v) {
-        visited[v] = true;
-        for (int u : adj[v]) {
-            if (!visited[u]) {
-                dfs(u);
-            }
-        }
-    };
-
-    for (int i = 1; i <= n; i++) {
-        if (!visited[i]) {
-            dfs(i);
-            components++;
-        }
-    }
-    return components;
-}
-
-void solve() {
-    int n;
-    cin >> n;
-    vector<vector<int>> adj(n + 1);
-    vector<int> degree(n + 1, 0);
-    
-    // Read edges and create adjacency list
-    for (int i = 0; i < n - 1; i++) {
-        int u, v;
-        cin >> u >> v;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
-        degree[u]++;
-        degree[v]++;
-    }
-    
-    int maxComponents = 0;
-    // Try all pairs of vertices
-    for (int i = 1; i <= n; i++) {
-        for (int j = i + 1; j <= n; j++) {
-            if (degree[i] > 1 && degree[j] > 1) {
-                maxComponents = max(maxComponents, countComponents(adj, i, j, n));
-            }
-        }
-    }
-    
-    cout << maxComponents << "\n";
-}
-
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    
-    int t;
-    cin >> t;
-    while (t--) {
-        solve();
+    fast_io();
+    ll testcases;
+    cin >> testcases;
+    for (ll testcase = 0; testcase < testcases; ++testcase) {
+        // shaant man thi vichaar to question thay jase!!
+        ll a1, a2, a4, a5;
+        cin >> a1 >> a2 >> a4 >> a5;
+
+        ll a3 = a1 + a2;
+        ll cnt = 1;
+        if(a2 + a3 == a4) cnt++;
+        if(a3 + a4 == a5) cnt++;
+
+        ll cnt2 = 0;
+        cnt2++;
+        a3 = a5 - a4;
+        if(a3 == a2 + a1) cnt2++;
+        if(a4 == a3 + a2) cnt2++;
+
+        cout << max(cnt, cnt2) << '\n';
     }
-    return 0;
 }
+
+
+/*
+  -----     -----    -----    ----   
+ |     -   |        |        |    |  
+ |     -    -----    -----   |----   
+ |     -   |        |        |       
+  -----     -----    -----   |       
+*/

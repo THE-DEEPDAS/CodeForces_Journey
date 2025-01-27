@@ -151,29 +151,6 @@ ll findBitwiseXOR(ll L, ll R) {
     return res;
 }
 
-// Modular exponentiation
-ll mod_power(ll n, ll a, ll p) {
-    ll res = 1;
-    while (a) {
-        if (a % 2) res = (res * n) % p, a--;
-        else n = (n * n) % p, a /= 2;
-    }
-    return res;
-}
-
-// Modular multiplicative inverse using Fermat's Little Theorem
-ll mod_mul_inverse(ll a, ll b) {
-    return mod_power(a, b - 2, b);
-}
-
-// Calculate factorial mod a number
-ll factorial_mod(ll n, ll m) {
-    ll x = 1;
-    for (ll i = 2; i <= n; i++) {
-        x = (x * i) % m;
-    }
-    return x % m;
-}
 // Perform binary search on a vector
 template<typename T>
 T binary_search(const vector<T>& arr, T target) {
@@ -285,67 +262,63 @@ void postorder(TreeNode* root) {
     cout << root->val << ' ';
 }
 
-// Count components in graph after removing vertices v1 and v2
-int countComponents(vector<vector<int>>& adj, int v1, int v2, int n) {
-    vector<bool> visited(n + 1, false);
-    visited[v1] = visited[v2] = true;
-    int components = 0;
-
-    function<void(int)> dfs = [&](int v) {
-        visited[v] = true;
-        for (int u : adj[v]) {
-            if (!visited[u]) {
-                dfs(u);
-            }
-        }
-    };
-
-    for (int i = 1; i <= n; i++) {
-        if (!visited[i]) {
-            dfs(i);
-            components++;
-        }
-    }
-    return components;
-}
-
-void solve() {
-    int n;
-    cin >> n;
-    vector<vector<int>> adj(n + 1);
-    vector<int> degree(n + 1, 0);
-    
-    // Read edges and create adjacency list
-    for (int i = 0; i < n - 1; i++) {
-        int u, v;
-        cin >> u >> v;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
-        degree[u]++;
-        degree[v]++;
-    }
-    
-    int maxComponents = 0;
-    // Try all pairs of vertices
-    for (int i = 1; i <= n; i++) {
-        for (int j = i + 1; j <= n; j++) {
-            if (degree[i] > 1 && degree[j] > 1) {
-                maxComponents = max(maxComponents, countComponents(adj, i, j, n));
-            }
-        }
-    }
-    
-    cout << maxComponents << "\n";
-}
-
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    
-    int t;
-    cin >> t;
-    while (t--) {
-        solve();
+    fast_io();
+    ll testcases;
+    cin >> testcases;
+    for (ll testcase = 0; testcase < testcases; ++testcase) {
+        ll n, l, r;
+        cin >> n >> l >> r;
+
+        vector<ll> a(n);
+        for (ll i = 0; i < n; i++) {
+            cin >> a[i];
+        }
+        
+        vector<ll> subArr, outArr;
+        for (ll i = 0; i < n; i++) {
+            if (i >= l-1 && i < r) {
+                subArr.push_back(a[i]);
+            } 
+            else {
+                outArr.push_back(a[i]);
+            }
+        }
+
+        // Sort subArr in descending order and outArr in ascending order
+        sort(subArr.begin(), subArr.end(), greater<ll>());
+        sort(outArr.begin(), outArr.end());
+
+        // Calculate the initial sum of subArr
+        ll initial_sum = 0;
+        for(auto &val : subArr) initial_sum += val;
+        ll min_sum = initial_sum;
+
+        // Determine the maximum number of possible replacements
+        ll max_replacements = min((ll)subArr.size(), (ll)outArr.size());
+
+        // Iterate through possible number of replacements
+        for(ll k = 1; k <= max_replacements; k++) {
+            // Check if the replacement is beneficial
+            if(subArr[k-1] > outArr[k-1]) {
+                initial_sum = initial_sum - subArr[k-1] + outArr[k-1];
+                if(initial_sum < min_sum) {
+                    min_sum = initial_sum;
+                }
+            }
+            else {
+                break; // No further beneficial replacements
+            }
+        }
+
+        cout << min_sum << "\n";
     }
-    return 0;
 }
+
+/*
+  -----     -----    -----    ----   
+ |     -   |        |        |    |  
+ |     -    -----    -----   |----   
+ |     -   |        |        |       
+  -----     -----    -----   |       
+*/

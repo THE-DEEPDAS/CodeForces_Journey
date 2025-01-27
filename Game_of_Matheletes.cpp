@@ -285,67 +285,43 @@ void postorder(TreeNode* root) {
     cout << root->val << ' ';
 }
 
-// Count components in graph after removing vertices v1 and v2
-int countComponents(vector<vector<int>>& adj, int v1, int v2, int n) {
-    vector<bool> visited(n + 1, false);
-    visited[v1] = visited[v2] = true;
-    int components = 0;
-
-    function<void(int)> dfs = [&](int v) {
-        visited[v] = true;
-        for (int u : adj[v]) {
-            if (!visited[u]) {
-                dfs(u);
-            }
-        }
-    };
-
-    for (int i = 1; i <= n; i++) {
-        if (!visited[i]) {
-            dfs(i);
-            components++;
-        }
-    }
-    return components;
-}
-
-void solve() {
-    int n;
-    cin >> n;
-    vector<vector<int>> adj(n + 1);
-    vector<int> degree(n + 1, 0);
-    
-    // Read edges and create adjacency list
-    for (int i = 0; i < n - 1; i++) {
-        int u, v;
-        cin >> u >> v;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
-        degree[u]++;
-        degree[v]++;
-    }
-    
-    int maxComponents = 0;
-    // Try all pairs of vertices
-    for (int i = 1; i <= n; i++) {
-        for (int j = i + 1; j <= n; j++) {
-            if (degree[i] > 1 && degree[j] > 1) {
-                maxComponents = max(maxComponents, countComponents(adj, i, j, n));
-            }
-        }
-    }
-    
-    cout << maxComponents << "\n";
-}
-
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    
-    int t;
-    cin >> t;
-    while (t--) {
-        solve();
+    fast_io();
+    ll testcases;
+    cin >> testcases;
+    while (testcases--) {
+        ll n, k;
+        cin >> n >> k;
+        vector<ll> arr(n);
+        for (ll i = 0; i < n; i++) {
+            cin >> arr[i];
+        }
+        
+        sort(arr.begin(), arr.end());
+        ll score = 0, left = 0, right = n - 1;
+        
+        while (left < right) {
+            if (arr[left] + arr[right] == k) {
+                score++;
+                left++;
+                right--;
+            } 
+            else if (arr[left] + arr[right] < k) {
+                left++;
+            } 
+            else {
+                right--;
+            }
+        }
+        
+        cout << score << "\n";
     }
-    return 0;
 }
+
+/*
+  -----     -----    -----    ----   
+ |     -   |        |        |    |  
+ |     -    -----    -----   |----   
+ |     -   |        |        |       
+  -----     -----    -----   |       
+*/

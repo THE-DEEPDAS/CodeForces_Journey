@@ -1,1 +1,2 @@
-     ll high = prices.size() - 1;
+if(i < n - 1 && s[i + 1] == '1')
+                //     cnt++;

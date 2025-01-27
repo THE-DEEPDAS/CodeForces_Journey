@@ -285,67 +285,127 @@ void postorder(TreeNode* root) {
     cout << root->val << ' ';
 }
 
-// Count components in graph after removing vertices v1 and v2
-int countComponents(vector<vector<int>>& adj, int v1, int v2, int n) {
-    vector<bool> visited(n + 1, false);
-    visited[v1] = visited[v2] = true;
-    int components = 0;
-
-    function<void(int)> dfs = [&](int v) {
-        visited[v] = true;
-        for (int u : adj[v]) {
-            if (!visited[u]) {
-                dfs(u);
-            }
-        }
-    };
-
-    for (int i = 1; i <= n; i++) {
-        if (!visited[i]) {
-            dfs(i);
-            components++;
+// DSU implementation
+class DSU {
+    vector<ll> parent, size;
+public:
+    DSU(ll n) {
+        parent.resize(n + 1);
+        size.resize(n + 1, 1);
+        for(ll i = 0; i <= n; ++i) {
+            parent[i] = i;
         }
     }
-    return components;
-}
+
+    ll find(ll x) {
+        if(parent[x] == x) return x;
+        return parent[x] = find(parent[x]);
+    }
+
+    void unite(ll x, ll y) {
+        ll rootX = find(x);
+        ll rootY = find(y);
+        if(rootX != rootY) {
+            if(size[rootX] < size[rootY]) swap(rootX, rootY);
+            parent[rootY] = rootX;
+            size[rootX] += size[rootY];
+        }
+    }
+};
 
 void solve() {
-    int n;
-    cin >> n;
-    vector<vector<int>> adj(n + 1);
-    vector<int> degree(n + 1, 0);
+    ll n, m1, m2;
+    cin >> n >> m1 >> m2;
     
-    // Read edges and create adjacency list
-    for (int i = 0; i < n - 1; i++) {
-        int u, v;
+    DSU dsuF(n), dsuG(n);
+    vector<pair<ll,ll>> edgesF, edgesG;
+    
+    // Read graph F and unite components
+    for(ll i = 0; i < m1; i++) {
+        ll u, v;
         cin >> u >> v;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
-        degree[u]++;
-        degree[v]++;
+        edgesF.push_back({u, v});
+        dsuF.unite(u, v);
     }
     
-    int maxComponents = 0;
-    // Try all pairs of vertices
-    for (int i = 1; i <= n; i++) {
-        for (int j = i + 1; j <= n; j++) {
-            if (degree[i] > 1 && degree[j] > 1) {
-                maxComponents = max(maxComponents, countComponents(adj, i, j, n));
+    // Read graph G and unite components
+    for(ll i = 0; i < m2; i++) {
+        ll u, v;
+        cin >> u >> v;
+        edgesG.push_back({u, v});
+        dsuG.unite(u, v);
+    }
+    
+    // Map vertices to their components
+    map<ll, vector<ll>> compF, compG;
+    for(ll i = 1; i <= n; i++) {
+        compF[dsuF.find(i)].push_back(i);
+        compG[dsuG.find(i)].push_back(i);
+    }
+    
+    // Check if components match
+    vector<vector<ll>> compsF, compsG;
+    for(auto& p : compF) compsF.push_back(p.second);
+    for(auto& p : compG) compsG.push_back(p.second);
+    
+    for(auto& comp : compsF) sort(comp.begin(), comp.end());
+    for(auto& comp : compsG) sort(comp.begin(), comp.end());
+    sort(compsF.begin(), compsF.end());
+    sort(compsG.begin(), compsG.end());
+    
+    if(compsF != compsG) {
+        cout << "-1\n";
+        return;
+    }
+    
+    // For each component, count minimum operations needed
+    ll ans = 0;
+    set<pair<ll,ll>> setF, setG;
+    
+    for(auto& comp : compsF) {
+        setF.clear();
+        setG.clear();
+        
+        // Get edges within this component
+        for(auto& edge : edgesF) {
+            ll u = edge.first, v = edge.second;
+            if(dsuF.find(u) == dsuF.find(comp[0])) {
+                setF.insert({min(u,v), max(u,v)});
             }
         }
+        
+        for(auto& edge : edgesG) {
+            ll u = edge.first, v = edge.second;
+            if(dsuG.find(u) == dsuG.find(comp[0])) {
+                setG.insert({min(u,v), max(u,v)});
+            }
+        }
+        
+        // Count different edges
+        ll different = 0;
+        for(auto& edge : setF) {
+            if(setG.find(edge) == setG.end()) different++;
+        }
+        ans += different;
     }
     
-    cout << maxComponents << "\n";
+    cout << ans << "\n";
 }
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    
-    int t;
+    fast_io();
+    ll t;
     cin >> t;
-    while (t--) {
+    while(t--) {
         solve();
     }
     return 0;
 }
+
+/*
+  -----     -----    -----    ----   
+ |     -   |        |        |    |  
+ |     -    -----    -----   |----   
+ |     -   |        |        |       
+  -----     -----    -----   |       
+*/
