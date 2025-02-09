@@ -289,41 +289,20 @@ int main() {
     fast_io();
     ll testcases;
     cin >> testcases;
-    for (ll testcase = 0; testcase < testcases; ++testcase){
-         // shaant man thi vichaar to question thay jase!!
-        ll n, m; 
-        cin >> n >> m;
+    for (ll testcase = 0; testcase < testcases; ++testcase) {
+        // shaant man thi vichaar to question thay jase!!
+        ll n;
+        cin >> n;
 
-        vector<pair<ll, vector<ll>>> arrs(n);
-        for(ll i = 0; i < n; i++){
-            ll sum = 0;
-            vector<ll> temp(m);
-            for(ll j = 0; j < m; j++){
-                cin >> temp[j];
-                sum += temp[j];
-            }
-            arrs[i] = { sum, temp };
+        vector<ll> a(n);
+        for (ll i = 0; i < n; i++) {
+            cin >> a[i];
         }
 
-        sort(arrs.begin(), arrs.end(), [](auto &a, auto &b){
-            return a.first > b.first; 
-        });
-
-        vector<ll> concatenated;
-        concatenated.reserve(n * m);
-        for(auto &p : arrs){
-            for(auto &val : p.second) concatenated.push_back(val);
-        }
-
-        long long ans = 0, prefix = 0;
-        for(auto &val : concatenated){
-            prefix += val;
-            ans += prefix;
-        }
-
-        cout << ans << "\n";
+        
     }
 }
+
 
 /*
   -----     -----    -----    ----   

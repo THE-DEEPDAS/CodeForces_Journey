@@ -287,44 +287,64 @@ void postorder(TreeNode* root) {
 
 int main() {
     fast_io();
-    ll testcases;
-    cin >> testcases;
-    for (ll testcase = 0; testcase < testcases; ++testcase){
-         // shaant man thi vichaar to question thay jase!!
-        ll n, m; 
-        cin >> n >> m;
+    ll testcases; cin >> testcases;
+    while(testcases--) {
+        ll n, m, k; cin >> n >> m >> k;
+        // If total bits < 1 or trivial checks
+        if(n + m == 0 || k < 1) {
+            cout << -1 << "\n";
+            continue;
+        }
+        // If difference bigger than k from the start
+        if(abs(n - m) > k) {
+            cout << -1 << "\n";
+            continue;
+        }
+        // Decide which bit is +1 vs -1
+        bool zeroPositive = (n >= m);
+        ll zerosLeft = n, onesLeft = m;
+        char zeroChar = '0', oneChar = '1';
+        int plusVal = zeroPositive ? 1 : -1;  // value contributed by '0'
+        int minusVal = zeroPositive ? -1 : 1; // value contributed by '1'
 
-        vector<pair<ll, vector<ll>>> arrs(n);
-        for(ll i = 0; i < n; i++){
-            ll sum = 0;
-            vector<ll> temp(m);
-            for(ll j = 0; j < m; j++){
-                cin >> temp[j];
-                sum += temp[j];
+        // We'll build the string bit by bit with partial-sum
+        // partial = 0 means #positive - #negative = 0
+        int partial = 0;
+        bool reachedK = false;
+        string s;
+        s.reserve(n + m);
+
+        for(int i=0; i < n + m; i++){
+            // Try to place '0' if we have zerosLeft
+            bool canPlaceZero = (zerosLeft > 0) && (abs(partial + plusVal) <= k);
+            bool canPlaceOne  = (onesLeft > 0)  && (abs(partial + minusVal) <= k);
+
+            if(canPlaceZero){
+                s.push_back(zeroChar);
+                partial += plusVal;
+                zerosLeft--;
             }
-            arrs[i] = { sum, temp };
+            else if(canPlaceOne){
+                // Place '1' if '0' is impossible
+                s.push_back(oneChar);
+                partial += minusVal;
+                onesLeft--;
+            } 
+            else {
+                partial = 999999;
+                break;
+            }
+            if(abs(partial) == k) reachedK = true;
         }
 
-        sort(arrs.begin(), arrs.end(), [](auto &a, auto &b){
-            return a.first > b.first; 
-        });
-
-        vector<ll> concatenated;
-        concatenated.reserve(n * m);
-        for(auto &p : arrs){
-            for(auto &val : p.second) concatenated.push_back(val);
+        if(zerosLeft == 0 && onesLeft == 0 && reachedK && abs(partial) <= k) {
+            cout << s << "\n";
+        } 
+        else {
+            cout << -1 << "\n";
         }
-
-        long long ans = 0, prefix = 0;
-        for(auto &val : concatenated){
-            prefix += val;
-            ans += prefix;
-        }
-
-        cout << ans << "\n";
     }
 }
-
 /*
   -----     -----    -----    ----   
  |     -   |        |        |    |  

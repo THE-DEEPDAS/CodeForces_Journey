@@ -289,41 +289,43 @@ int main() {
     fast_io();
     ll testcases;
     cin >> testcases;
-    for (ll testcase = 0; testcase < testcases; ++testcase){
-         // shaant man thi vichaar to question thay jase!!
-        ll n, m; 
+    for (ll testcase = 0; testcase < testcases; ++testcase) {
+        ll n, m;
         cin >> n >> m;
 
-        vector<pair<ll, vector<ll>>> arrs(n);
-        for(ll i = 0; i < n; i++){
-            ll sum = 0;
-            vector<ll> temp(m);
-            for(ll j = 0; j < m; j++){
-                cin >> temp[j];
-                sum += temp[j];
-            }
-            arrs[i] = { sum, temp };
+        vector<ll> a(n);
+        for(ll i = 0; i < n; i++) cin >> a[i];
+
+        vector<ll> b(m);
+        for(ll i = 0; i < m; i++) cin >> b[i];
+
+        if(n == 1) {
+            cout << "YES\n";
+            continue;
         }
 
-        sort(arrs.begin(), arrs.end(), [](auto &a, auto &b){
-            return a.first > b.first; 
-        });
+        vector<vector<bool>> dp(n, vector<bool>(2, false));
+        dp[0][0] = true;
+        dp[0][1] = true;
 
-        vector<ll> concatenated;
-        concatenated.reserve(n * m);
-        for(auto &p : arrs){
-            for(auto &val : p.second) concatenated.push_back(val);
+        for(ll i = 1; i < n; i++) {
+            ll prev0 = a[i - 1];
+            ll prev1 = b[0] - a[i - 1];
+            ll cur0  = a[i];
+            ll cur1  = b[0] - a[i];
+
+            if(dp[i - 1][0] && prev0 <= cur0) dp[i][0] = true;
+            if(dp[i - 1][0] && prev0 <= cur1) dp[i][1] = true;
+
+            if(dp[i - 1][1] && prev1 <= cur0) dp[i][0] = true;
+            if(dp[i - 1][1] && prev1 <= cur1) dp[i][1] = true;
         }
 
-        long long ans = 0, prefix = 0;
-        for(auto &val : concatenated){
-            prefix += val;
-            ans += prefix;
-        }
-
-        cout << ans << "\n";
+        if(dp[n - 1][0] || dp[n - 1][1]) cout << "YES\n";
+        else cout << "NO\n";
     }
 }
+
 
 /*
   -----     -----    -----    ----   
