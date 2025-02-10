@@ -1,0 +1,1 @@
+{"name":"Local: Skibidus_and_Rizz","url":"d:\\CodeForces_Journey\\Skibidus_and_Rizz.cpp","tests":[{"id":1739150937525,"input":"6\n1 2 1\n4 3 2\n2 4 3\n8 3 2\n5 0 4\n5 0 5\n","output":"101\n0100101\n011011\n-1\n-1\n00000\n"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\CodeForces_Journey\\Skibidus_and_Rizz.cpp","group":"local","local":true}
