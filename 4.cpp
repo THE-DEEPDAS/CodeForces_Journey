@@ -287,64 +287,27 @@ void postorder(TreeNode* root) {
 
 int main() {
     fast_io();
-    ll testcases; cin >> testcases;
-    while(testcases--) {
-        ll n, m, k; cin >> n >> m >> k;
-        // If total bits < 1 or trivial checks
-        if(n + m == 0 || k < 1) {
-            cout << -1 << "\n";
-            continue;
-        }
-        // If difference bigger than k from the start
-        if(abs(n - m) > k) {
-            cout << -1 << "\n";
-            continue;
-        }
-        // Decide which bit is +1 vs -1
-        bool zeroPositive = (n >= m);
-        ll zerosLeft = n, onesLeft = m;
-        char zeroChar = '0', oneChar = '1';
-        int plusVal = zeroPositive ? 1 : -1;  // value contributed by '0'
-        int minusVal = zeroPositive ? -1 : 1; // value contributed by '1'
+    ll testcases;
+    cin >> testcases;
+    for (ll testcase = 0; testcase < testcases; ++testcase) {
+        // shaant man thi vichaar to question thay jase!!
+        ll n, k;
+        cin >> n >> k;
 
-        // We'll build the string bit by bit with partial-sum
-        // partial = 0 means #positive - #negative = 0
-        int partial = 0;
-        bool reachedK = false;
-        string s;
-        s.reserve(n + m);
+        ll ref = n - 1;
 
-        for(int i=0; i < n + m; i++){
-            // Try to place '0' if we have zerosLeft
-            bool canPlaceZero = (zerosLeft > 0) && (abs(partial + plusVal) <= k);
-            bool canPlaceOne  = (onesLeft > 0)  && (abs(partial + minusVal) <= k);
-
-            if(canPlaceZero){
-                s.push_back(zeroChar);
-                partial += plusVal;
-                zerosLeft--;
-            }
-            else if(canPlaceOne){
-                // Place '1' if '0' is impossible
-                s.push_back(oneChar);
-                partial += minusVal;
-                onesLeft--;
-            } 
-            else {
-                partial = 999999;
-                break;
-            }
-            if(abs(partial) == k) reachedK = true;
+        for (ll i = 0; i < n; i++)
+        {
+            if((ref & i) == i) cout << k << " ";
+            else
+                cout << 0 << " ";
+            
         }
-
-        if(zerosLeft == 0 && onesLeft == 0 && reachedK && abs(partial) <= k) {
-            cout << s << "\n";
-        } 
-        else {
-            cout << -1 << "\n";
-        }
+        cout << "\n";
     }
 }
+
+
 /*
   -----     -----    -----    ----   
  |     -   |        |        |    |  

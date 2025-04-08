@@ -356,48 +356,6 @@ void postorder(TreeNode *root)
     cout << root->val << ' ';
 }
 
-ll mergeCount(vector<ll> &arr, ll left, ll mid, ll right)
-{
-    ll i = left, j = mid + 1, k = 0, invCount = 0;
-    vector<ll> temp(right - left + 1);
-
-    while (i <= mid && j <= right)
-    {
-        if (arr[i] <= arr[j])
-        {
-            temp[k++] = arr[i++];
-        }
-        else
-        {
-            temp[k++] = arr[j++];
-            invCount += (mid - i + 1);
-        }
-    }
-    while (i <= mid)
-        temp[k++] = arr[i++];
-    while (j <= right)
-        temp[k++] = arr[j++];
-    for (i = left, k = 0; i <= right; i++, k++)
-        arr[i] = temp[k];
-    return invCount;
-}
-
-ll mergesortCount(vector<ll> &arr, ll left, ll right)
-{
-    if (left >= right)
-        return 0;
-    ll mid = left + (right - left) / 2;
-    ll invCount = mergesortCount(arr, left, mid);
-    invCount += mergesortCount(arr, mid + 1, right);
-    invCount += mergeCount(arr, left, mid, right);
-    return invCount;
-}
-
-ll countInversions(vector<ll> arr)
-{
-    return mergesortCount(arr, 0, arr.size() - 1);
-}
-
 int main()
 {
     fast_io();
@@ -406,31 +364,29 @@ int main()
     for (ll testcase = 0; testcase < testcases; ++testcase)
     {
         // shaant man thi vichaar to question thay jase!!
-        ll n;
-        cin >> n;
+        ll n, x;
+        cin >> n >> x;
+
+        ll ans = 0, cnt = 0;
         vector<ll> a(n);
         for (ll i = 0; i < n; i++)
             cin >> a[i];
-        ll minInv = countInversions(a);
-        ll ans_l = 0, ans_r = 0;
-        for (ll l = 0; l < n; l++)
-        {
-            for (ll r = l; r < n; r++)
-            {
-                vector<ll> b = a;
-                ll tmp = b[l];
-                for (ll k = l; k < r; k++)
-                    b[k] = b[k + 1];
-                b[r] = tmp;
-                if (countInversions(b) < minInv)
-                {
-                    minInv = countInversions(b);
-                    ans_l = l;
-                    ans_r = r;
-                }
+
+        sort(a.rbegin(), a.rend());
+
+        ll mini = INT_MAX;
+        for(ll i = 0; i < n; i++){
+            cnt++;
+            mini = min(mini, a[i]);
+            
+            if(cnt * mini >= x){
+                ans++;
+                cnt = 0;
+                mini = INT_MAX;
             }
         }
-        cout << ans_l + 1 << " " << ans_r + 1 << "\n";
+
+        cout << ans << "\n";
     }
 }
 
