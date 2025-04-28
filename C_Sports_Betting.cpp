@@ -364,64 +364,66 @@ int main()
     for (ll testcase = 0; testcase < testcases; ++testcase)
     {
         // shaant man thi vichaar to question thay jase!!
-        ll n, k;
-        cin >> n >> k;
-
-        vector<ll> a(n), b(n);
-        for (ll i = 0; i < n; i++)
-            cin >> a[i];
-
-        for (ll i = 0; i < n; i++)
-            cin >> b[i];
-
-        // 1st find the numbers which are in both
-        // check if it is true for all
-        // if it is then print 1 else 0
-        // if all are -1 then print(k - max + 2)
-
-        ll sum = -1, maxi = INT_MIN;
-        bool flag = false, all = true;
-        set<ll> seen;
-
+        ll n;
+        cin >> n;
+        vector<ll> arr(n);
         for (ll i = 0; i < n; i++)
         {
-            if (b[i] != -1)
-                all = false;
-            if (b[i] == -1 && seen.find(a[i]) != seen.end())
+            cin >> arr[i];
+        }
+
+        if (n < 4)
+        {
+            cout << "NO" << endl;
+            continue;
+        }
+
+        map<ll, ll> mp;
+        for (auto i : arr)
+        {
+            mp[i]++;
+        }
+
+        ll mx = 0;
+        for (auto i : mp)
+        {
+            mx = max(mx, i.second);
+        }
+
+        if (mx >= 4)
+        {
+            cout << "YES" << endl;
+            continue;
+        }
+
+        vector<ll> sorted_keys;
+        for (auto i : mp)
+        {
+            sorted_keys.push_back(i.first);
+        }
+        sort(sorted_keys.begin(), sorted_keys.end());
+
+        bool F = false;
+
+        for (ll i = 0; i < sorted_keys.size() - 1; i++)
+        {
+            if (mp[sorted_keys[i]] >= 2 && mp[sorted_keys[i + 1]] >= 2)
             {
-                flag = true;
+                F = true;
+                break;
             }
-            if (a[i] != -1 && b[i] != -1)
+        }
+
+        for (ll i = 0; i < sorted_keys.size() - 2; i++)
+        {
+            if (mp[sorted_keys[i]] >= 2 && mp[sorted_keys[i + 1]] >= 1 && mp[sorted_keys[i + 2]] >= 2)
             {
-                if (sum == -1)
-                {
-                    sum = a[i] + b[i];
-                }
-                else
-                {
-                    if (sum != a[i] + b[i])
-                    {
-                        flag = true;
-                    }
-                }
-                seen.insert(a[i]);
+                F = true;
+                break;
             }
-
-            maxi = max(maxi, a[i]);
         }
 
-        if (flag && !all)
-        {
-            cout << 0 << "\n";
-        }
-        else if (!flag && !all)
-        {
-            cout << 1 << "\n";
-        }
-        else
-        {
-            cout << k - maxi + 2 << "\n";
-        }
+        cout << (F ? "YES" : "NO") << endl;
     }
 }
 

@@ -367,61 +367,45 @@ int main()
         ll n, k;
         cin >> n >> k;
 
-        vector<ll> a(n), b(n);
+        vector<ll> bars(n);
         for (ll i = 0; i < n; i++)
-            cin >> a[i];
+        {
+            cin >> bars[i];
+        }
 
-        for (ll i = 0; i < n; i++)
-            cin >> b[i];
-
-        // 1st find the numbers which are in both
-        // check if it is true for all
-        // if it is then print 1 else 0
-        // if all are -1 then print(k - max + 2)
-
-        ll sum = -1, maxi = INT_MIN;
-        bool flag = false, all = true;
-        set<ll> seen;
+        sort(bars.begin(), bars.end());
+        set<ll> possible_houses;
 
         for (ll i = 0; i < n; i++)
         {
-            if (b[i] != -1)
-                all = false;
-            if (b[i] == -1 && seen.find(a[i]) != seen.end())
+            ll pos = bars[i];
+            for (ll left = 0; left + (n - k - 1) < n; left++)
             {
-                flag = true;
-            }
-            if (a[i] != -1 && b[i] != -1)
-            {
-                if (sum == -1)
+                ll right = left + (n - k - 1);
+                vector<ll> remaining_bars(bars.begin() + left, bars.begin() + right + 1);
+                ll median_pos;
+                if ((n - k) % 2 == 1)
                 {
-                    sum = a[i] + b[i];
+                    median_pos = remaining_bars[(n - k) / 2];
                 }
                 else
                 {
-                    if (sum != a[i] + b[i])
+                    median_pos = remaining_bars[(n - k) / 2 - 1];
+                    possible_houses.insert(median_pos);
+                    median_pos = remaining_bars[(n - k) / 2];
+                }
+                possible_houses.insert(median_pos);
+                if ((n - k) % 2 == 0 && remaining_bars[(n - k) / 2] > remaining_bars[(n - k) / 2 - 1] + 1)
+                {
+                    for (ll mid_pos = remaining_bars[(n - k) / 2 - 1] + 1; mid_pos < remaining_bars[(n - k) / 2]; mid_pos++)
                     {
-                        flag = true;
+                        possible_houses.insert(mid_pos);
                     }
                 }
-                seen.insert(a[i]);
             }
-
-            maxi = max(maxi, a[i]);
         }
 
-        if (flag && !all)
-        {
-            cout << 0 << "\n";
-        }
-        else if (!flag && !all)
-        {
-            cout << 1 << "\n";
-        }
-        else
-        {
-            cout << k - maxi + 2 << "\n";
-        }
+        cout << possible_houses.size() << endl;
     }
 }
 

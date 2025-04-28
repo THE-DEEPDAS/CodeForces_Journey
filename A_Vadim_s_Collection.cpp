@@ -364,64 +364,28 @@ int main()
     for (ll testcase = 0; testcase < testcases; ++testcase)
     {
         // shaant man thi vichaar to question thay jase!!
-        ll n, k;
-        cin >> n >> k;
+        string s;
+        cin >> s;
+        vector<int> mpp(10, 0);
+        for (char c : s)
+            mpp[c - '0']++;
 
-        vector<ll> a(n), b(n);
-        for (ll i = 0; i < n; i++)
-            cin >> a[i];
-
-        for (ll i = 0; i < n; i++)
-            cin >> b[i];
-
-        // 1st find the numbers which are in both
-        // check if it is true for all
-        // if it is then print 1 else 0
-        // if all are -1 then print(k - max + 2)
-
-        ll sum = -1, maxi = INT_MIN;
-        bool flag = false, all = true;
-        set<ll> seen;
-
-        for (ll i = 0; i < n; i++)
+        string result = "";
+        for (int i = 0; i < 11; ++i)
         {
-            if (b[i] != -1)
-                all = false;
-            if (b[i] == -1 && seen.find(a[i]) != seen.end())
+            int required = 10 - i;
+            for (int d = required; d <= 9; ++d)
             {
-                flag = true;
-            }
-            if (a[i] != -1 && b[i] != -1)
-            {
-                if (sum == -1)
+                if (mpp[d] > 0)
                 {
-                    sum = a[i] + b[i];
+                    result += (char)('0' + d);
+                    mpp[d]--;
+                    break;
                 }
-                else
-                {
-                    if (sum != a[i] + b[i])
-                    {
-                        flag = true;
-                    }
-                }
-                seen.insert(a[i]);
             }
-
-            maxi = max(maxi, a[i]);
         }
 
-        if (flag && !all)
-        {
-            cout << 0 << "\n";
-        }
-        else if (!flag && !all)
-        {
-            cout << 1 << "\n";
-        }
-        else
-        {
-            cout << k - maxi + 2 << "\n";
-        }
+        cout << result << endl;
     }
 }
 

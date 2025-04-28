@@ -361,66 +361,66 @@ int main()
     fast_io();
     ll testcases;
     cin >> testcases;
-    for (ll testcase = 0; testcase < testcases; ++testcase)
+    while (testcases--)
     {
-        // shaant man thi vichaar to question thay jase!!
         ll n, k;
         cin >> n >> k;
-
         vector<ll> a(n), b(n);
         for (ll i = 0; i < n; i++)
             cin >> a[i];
-
         for (ll i = 0; i < n; i++)
             cin >> b[i];
 
-        // 1st find the numbers which are in both
-        // check if it is true for all
-        // if it is then print 1 else 0
-        // if all are -1 then print(k - max + 2)
-
-        ll sum = -1, maxi = INT_MIN;
-        bool flag = false, all = true;
-        set<ll> seen;
+        bool all_missing = true;
+        ll target = -1;
+        bool inconsistent = false;
 
         for (ll i = 0; i < n; i++)
         {
             if (b[i] != -1)
-                all = false;
-            if (b[i] == -1 && seen.find(a[i]) != seen.end())
             {
-                flag = true;
-            }
-            if (a[i] != -1 && b[i] != -1)
-            {
-                if (sum == -1)
+                all_missing = false;
+                ll sum = a[i] + b[i];
+                if (target == -1)
                 {
-                    sum = a[i] + b[i];
+                    target = sum;
                 }
-                else
+                else if (target != sum)
                 {
-                    if (sum != a[i] + b[i])
-                    {
-                        flag = true;
-                    }
+                    inconsistent = true;
+                    break;
                 }
-                seen.insert(a[i]);
             }
-
-            maxi = max(maxi, a[i]);
         }
 
-        if (flag && !all)
+        if (inconsistent)
         {
             cout << 0 << "\n";
         }
-        else if (!flag && !all)
+        else if (!all_missing)
         {
-            cout << 1 << "\n";
+            // Check missing values fit
+            bool valid = true;
+            for (ll i = 0; i < n; i++)
+            {
+                if (b[i] == -1)
+                {
+                    ll val = target - a[i];
+                    if (val < 0 || val > k)
+                    {
+                        valid = false;
+                        break;
+                    }
+                }
+            }
+            cout << (valid ? 1 : 0) << "\n";
         }
         else
         {
-            cout << k - maxi + 2 << "\n";
+            ll lo = *max_element(a.begin(), a.end());
+            ll hi = *min_element(a.begin(), a.end()) + k;
+            ll count = max(0LL, hi - lo + 1);
+            cout << count << "\n";
         }
     }
 }

@@ -1,50 +1,40 @@
-import sys
-import heapq
-
-def can_form_permutation(N, P):
-    # Max heap to store segments (-dist, -left_index, left, right)
-    max_heap = []
-    heapq.heappush(max_heap, (-N, -1, 1, N))  # (-distance, -index, left, right)
-    
-    seating = [0] * (N + 1)  # Stores the seating order
-    for i in range(1, N + 1):  # People arrive in order
-        while max_heap:
-            _, neg_left, left, right = heapq.heappop(max_heap)
-            mid = (left + right) // 2
-            
-            if seating[mid] == 0:  # Check if the seat is free
-                seating[mid] = i  # Seat the person
-                break
-        
-        # Check if the placement doesn't match the required permutation
-        if seating[mid] != P[i - 1]:
-            return "NO"
-        
-        # Push new segments to the heap if valid
-        if left <= mid - 1:
-            heapq.heappush(max_heap, (-(mid - left), -left, left, mid - 1))
-        if mid + 1 <= right:
-            heapq.heappush(max_heap, (-(right - mid), -mid, mid + 1, right))
-    
-    return "YES"
-
 def main():
-    input = sys.stdin.read
-    data = input().split()
-    
-    index = 0
-    T = int(data[index])
-    index += 1
-    results = []
-    
-    for _ in range(T):
-        N = int(data[index])
-        index += 1
-        P = list(map(int, data[index:index + N]))
-        index += N
-        results.append(can_form_permutation(N, P))
-    
-    sys.stdout.write("\n".join(results) + "\n")
+    t = int(input()) 
+    for _ in range(t):
+        n, k = map(int, input().split())
+        a = list(map(int, input().split()))
+        a.sort()
+        m = n - k
 
-if __name__ == "__main__":
-    main()
+        intervals = []
+        for i in range(n - m + 1):
+            if m % 2 == 1:
+                median_pos = i + (m - 1) // 2
+                start = a[median_pos]
+                end = start
+            else:
+                left_pos = i + (m // 2 - 1)
+                right_pos = i + m // 2
+                start = a[left_pos]
+                end = a[right_pos]
+            intervals.append((start, end))
+
+        intervals.sort()
+
+        merged = []
+        for interval in intervals:
+            if not merged:
+                merged.append(interval)
+            else:
+                last_start, last_end = merged[-1]
+                current_start, current_end = interval
+                if current_start <= last_end + 1:
+                    merged[-1] = (last_start, max(last_end, current_end))
+                else:
+                    merged.append(interval)
+        total = 0
+        for start, end in merged:
+            total += end - start + 1
+        print(total)
+
+main()
