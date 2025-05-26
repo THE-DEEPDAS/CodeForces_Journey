@@ -363,32 +363,35 @@ int main()
     cin >> testcases;
     for (ll testcase = 0; testcase < testcases; ++testcase)
     {
-        // shaant man thi vichaar to question thay jase!!
-        // fouad e n /2 ane m / 2 par muku rehvanu
-        ll n, m, a, b;
-        cin >> n >> m >> a >> b;
+        string s;
+        cin >> s;
 
-        // koi pan ek 2 par aavi jaay pachi 2 turn joiye
-        // max distance from maximum je hoy te pehla kapvanu
-        // ne have aama 3 aavse which is perfect 1 + 3 = 4 ansewer
-        ll ini_a = a, ini_b = b;
-        ll min_from_a = min(n - a + 1, a);
-        ll min_from_b = min(m - b + 1, b);
-        ll sub_a = n - min_from_a;
-        ll sub_b = m - min_from_b;
-        if (sub_a > sub_b)
-            ini_a = min_from_a;
-        else
-            ini_b = min_from_b;
-
-        ll t = 0, w = 0;
-
-        t = ll(ceil(log2(ini_a))); // ke - 2 te joiye che wait karo
-
-        w = ll(ceil(log2(ini_b)));
-
-        cout << 1 + t + w << '\n';
+        int n = s.size();
+        int bal = 0;
+        bool print = false;
+        for (ll i = 1; i + 1 < n; i++)
+        {
+            if (s[i] == '(')
+                bal++;
+            else
+                bal--;
+            if (bal < 0)
+            {
+                cout << "YES\n";
+                print = true;
+                break;
+            }
+        }
+        if (bal == 0 && !print)
+        {
+            cout << "NO\n";
+        }
+        else if(!print)
+        {
+            cout << "YES\n";
+        }
     }
+    return 0;
 }
 
 /*

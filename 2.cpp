@@ -363,65 +363,45 @@ int main()
     cin >> testcases;
     for (ll testcase = 0; testcase < testcases; ++testcase)
     {
-        // shaant man thi vichaar to question thay jase!!
-        ll n, k;
-        cin >> n >> k;
+        ll n, x;
+        cin >> n >> x;
 
-        vector<ll> a(n), b(n);
-        for (ll i = 0; i < n; i++)
-            cin >> a[i];
+        vector<ll> result;
+        ll sum = 0;
 
-        for (ll i = 0; i < n; i++)
-            cin >> b[i];
-
-        // 1st find the numbers which are in both
-        // check if it is true for all
-        // if it is then print 1 else 0
-        // if all are -1 then print(k - max + 2)
-
-        ll sum = -1, maxi = INT_MIN;
-        bool flag = false, all = true;
-        set<ll> seen;
-
-        for (ll i = 0; i < n; i++)
+        // Extract powers of 2 corresponding to set bits in x
+        for (ll i = 0; i < 60; ++i)
         {
-            if (b[i] != -1)
-                all = false;
-            if (b[i] == -1 && seen.find(a[i]) != seen.end())
+            if (x & (1LL << i))
             {
-                flag = true;
+                result.push_back(1LL << i);
+                sum += (1LL << i);
             }
-            if (a[i] != -1 && b[i] != -1)
-            {
-                if (sum == -1)
-                {
-                    sum = a[i] + b[i];
-                }
-                else
-                {
-                    if (sum != a[i] + b[i])
-                    {
-                        flag = true;
-                    }
-                }
-                seen.insert(a[i]);
-            }
-
-            maxi = max(maxi, a[i]);
         }
 
-        if (flag && !all)
+        // If the number of elements is greater than n, it's impossible
+        if (result.size() > n)
         {
-            cout << 0 << "\n";
+            cout << -1 << "\n";
+            continue;
         }
-        else if (!flag && !all)
+
+        // Add zeros to make the array size exactly n
+        while (result.size() < n)
         {
-            cout << 1 << "\n";
+            // Combine the smallest two elements to keep the sum minimal
+            sort(result.begin(), result.end());
+            ll smallest = result[0];
+            result.erase(result.begin());
+            result[0] += smallest;
         }
-        else
+
+        // Output the result
+        for (ll num : result)
         {
-            cout << k - maxi + 2 << "\n";
+            cout << num << " ";
         }
+        cout << "\n";
     }
 }
 
