@@ -366,17 +366,54 @@ int main()
         // shaant man thi vichaar to question thay jase!!
         ll n;
         cin >> n;
-        if(n <= 2) {
-            cout << "Alice\n";
-            continue;
+
+        vector<ll> a(n);
+        for (ll i = 0; i < n; i++)
+        {
+            cin >> a[i];
         }
-        ll mp = n / 4 + 1;
-        if(mp % 2 == 1){
-            cout << "Alice\n";  
+
+        vector<ll> mini(n), maxi(n);
+        mini[0] = a[0];
+        maxi[n - 1] = a[n - 1];
+        for (ll i = 1; i < n; i++)
+        {
+            mini[i] = min(mini[i - 1], a[i]);
         }
-        else {
-            cout << "Bob\n";
+        for (ll i = n - 2; i >= 0; i--)
+        {
+            maxi[i] = max(maxi[i + 1], a[i]);
         }
+
+        string ans = "";
+        // if(maxi[0] > a[0])
+        // {
+        //     ans += '1';
+        // }
+        // else
+        // {
+        //     ans += '0';
+        // }
+        for(ll i = 0; i <= n - 1; i++)
+        {
+            if (mini[i] == a[i] || a[i] == maxi[i])
+            {
+                ans += '1';
+            }
+            else
+            {
+                ans += '0';
+            }
+        }
+        // if (mini[n - 1] < a[n - 1])
+        // {
+        //     ans += '1';
+        // }
+        // else
+        // {
+        //     ans += '0';
+        // }
+        cout << ans << '\n';
     }
 }
 

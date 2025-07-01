@@ -364,18 +364,27 @@ int main()
     for (ll testcase = 0; testcase < testcases; ++testcase)
     {
         // shaant man thi vichaar to question thay jase!!
-        ll n;
-        cin >> n;
-        if(n <= 2) {
-            cout << "Alice\n";
-            continue;
+        ll n, j, k;
+        cin >> n >> j >> k;
+        
+
+        vector<ll> a(n);
+        for (ll i = 0; i < n; i++)
+        {
+            cin >> a[i];
         }
-        ll mp = n / 4 + 1;
-        if(mp % 2 == 1){
-            cout << "Alice\n";  
+
+        ll val = a[j - 1];
+        // jo mare k players rakhvana che, so min number of fights possible is n / k
+        // yes if there are atleast n / k players with strength <= val
+        // ha pan evu pan to thay ke me ek strong player levu ne ene j ladaiva karu
+        // so we need one strong player and k
+
+        if(k >= 2 || (k == 1 && *max_element(a.begin(), a.end()) == val)){
+            cout << "YES\n";
         }
-        else {
-            cout << "Bob\n";
+        else{
+            cout << "NO\n";
         }
     }
 }

@@ -364,19 +364,10 @@ int main()
     for (ll testcase = 0; testcase < testcases; ++testcase)
     {
         // shaant man thi vichaar to question thay jase!!
-        ll n;
-        cin >> n;
-        if(n <= 2) {
-            cout << "Alice\n";
-            continue;
-        }
-        ll mp = n / 4 + 1;
-        if(mp % 2 == 1){
-            cout << "Alice\n";  
-        }
-        else {
-            cout << "Bob\n";
-        }
+        // what alice can do is that try to make the alternate numbers 0 in her turn
+        // so when bob plays, he can not choose substrings so there will always be some numbers which turned to 0 
+        // more than what bob could turn back to 1
+        
     }
 }
 

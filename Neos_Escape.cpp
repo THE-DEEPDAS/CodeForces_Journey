@@ -361,22 +361,30 @@ int main()
     fast_io();
     ll testcases;
     cin >> testcases;
+    // aakhu motu hoy ene convert to 1 number ane pachi direct mex with itself to humesha 0 thay javamo
+    // so according to this thinking, answer can never go beyond 2
+    // find the number of subarray's which have no 0 element and just apply the condition on that count
+
     for (ll testcase = 0; testcase < testcases; ++testcase)
     {
         // shaant man thi vichaar to question thay jase!!
         ll n;
         cin >> n;
-        if(n <= 2) {
-            cout << "Alice\n";
-            continue;
+
+        vector<ll> a(n);
+        for(ll i = 0; i < n; ++i)
+        {
+            cin >> a[i];
         }
-        ll mp = n / 4 + 1;
-        if(mp % 2 == 1){
-            cout << "Alice\n";  
+
+        ll ans = 0;
+        for(ll i = 0; i < n - 1; i++){
+            if(a[i] < a[i + 1]){
+                ans++;
+            }
         }
-        else {
-            cout << "Bob\n";
-        }
+
+        cout << ans + 1 << '\n';
     }
 }
 

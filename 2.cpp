@@ -363,45 +363,39 @@ int main()
     cin >> testcases;
     for (ll testcase = 0; testcase < testcases; ++testcase)
     {
-        ll n, x;
-        cin >> n >> x;
-
-        vector<ll> result;
-        ll sum = 0;
-
-        // Extract powers of 2 corresponding to set bits in x
-        for (ll i = 0; i < 60; ++i)
+        // shaant man thi vichaar to question thay jase!!
+        ll n;
+        cin >> n;
+        vector<ll> a(n);
+        for (ll i = 0; i < n; i++)
         {
-            if (x & (1LL << i))
+            cin >> a[i];
+        }
+
+        unordered_map<ll, ll> prev, curr;
+        ll ans = 1;
+
+        prev[a[0]]++;
+
+        for(ll i = 1; i < n; i++)
+        {
+            if (prev.find(a[i]) != prev.end())
             {
-                result.push_back(1LL << i);
-                sum += (1LL << i);
+                prev.erase(a[i]);
+            }
+            if (curr.find(a[i]) == curr.end())
+            {
+                curr[a[i]]++;
+            }
+            if (prev.empty())
+            {
+                ans++;
+                prev = curr;
+                curr.clear();
             }
         }
 
-        // If the number of elements is greater than n, it's impossible
-        if (result.size() > n)
-        {
-            cout << -1 << "\n";
-            continue;
-        }
-
-        // Add zeros to make the array size exactly n
-        while (result.size() < n)
-        {
-            // Combine the smallest two elements to keep the sum minimal
-            sort(result.begin(), result.end());
-            ll smallest = result[0];
-            result.erase(result.begin());
-            result[0] += smallest;
-        }
-
-        // Output the result
-        for (ll num : result)
-        {
-            cout << num << " ";
-        }
-        cout << "\n";
+        cout << ans << "\n";
     }
 }
 

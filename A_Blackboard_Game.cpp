@@ -366,12 +366,8 @@ int main()
         // shaant man thi vichaar to question thay jase!!
         ll n;
         cin >> n;
-        if(n <= 2) {
-            cout << "Alice\n";
-            continue;
-        }
-        ll mp = n / 4 + 1;
-        if(mp % 2 == 1){
+    
+        if(n % 4 != 0){
             cout << "Alice\n";  
         }
         else {
